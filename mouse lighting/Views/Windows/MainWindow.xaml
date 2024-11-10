@@ -6,10 +6,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:l="clr-namespace:mouse_lighting"
         xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+        xmlns:persons="clr-namespace:mouse_lighting.Resources.Converters"
+        xmlns:enums="clr-namespace:mouse_lighting.Services.LightingHandlers"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
         Width="800"
         Height="450">
+    <Window.Resources>
+        <ObjectDataProvider x:Key="myEnumData"
+                            MethodName="GetValues"
+                            ObjectType="{x:Type enums:LightingHandlersEnum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="enums:LightingHandlersEnum" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top"
               IsMainMenu="True">
@@ -54,9 +65,6 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Lighting name"
                                                 Binding="{Binding Path=Name}" />
-                            <!--<DataGridTextColumn Header="File Name"
-                                        Binding="{Binding Path=Guid}" />-->
-
                         </DataGrid.Columns>
                     </DataGrid>
 
@@ -74,6 +82,7 @@
                         <RowDefinition Height="30"></RowDefinition>
                     </Grid.RowDefinitions>
                     <DataGrid Grid.Row="0"
+                              CanUserSortColumns="False"
                               ItemsSource="{ Binding Path=Cycles}"
                               AutoGenerateColumns="False"
                               CanUserAddRows="False"
@@ -81,8 +90,6 @@
                               ColumnWidth="*"
                               SelectedIndex="{Binding IndexLightingCycle}"
                               CanUserReorderColumns="False">
-                        <!--SelectedValue="{Binding SelectedValue}"-->
-                        <!--SelectedItem="{Binding SelectedCycle, Mode=TwoWay}"-->
                         <DataGrid.Columns>
                             <DataGridTemplateColumn Header="Color Wheel Start">
                                 <DataGridTemplateColumn.CellTemplate>
@@ -125,21 +132,14 @@
                             <DataGridTextColumn Header="Display time"
                                                 Binding="{Binding DisplayTime}" />
                             <DataGridTextColumn Header="Id"
-                                                Binding="{Binding Id, Mode=OneWay}" />
+                                                Binding="{Binding Id}" />
+                            <DataGridComboBoxColumn Header="Handler"
+                                                    ItemsSource="{Binding Source={StaticResource myEnumData}, Mode=OneTime}"
+                                                    SelectedItemBinding="{Binding Handler}" />
                             <DataGridTemplateColumn Header="Move"
                                                     Width="20">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <!--<Path Fill="Black"
-                                              Data="M 0 6 L 12 6 L 6 0 Z">
-                                            <Path.InputBindings>
-                                                <MouseBinding
-                                                    CommandParameter="{Binding Id}"
-                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.UpCycleCommand}"
-                                                              MouseAction="LeftClick">
-                                                </MouseBinding>
-                                            </Path.InputBindings>
-                                        </Path>-->
                                         <StackPanel>
                                             <Button CommandParameter="{Binding Path=Id}"
                                                     Height="20"
@@ -165,7 +165,6 @@
                                         <Button CommandParameter="{Binding Path=Id}"
                                                 Content="Delete"
                                                 Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.RemoveCycleCommand}" />
-                                        <!--IsEnabled="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.ButtonImDIsEnable}"-->
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>

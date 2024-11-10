@@ -10,6 +10,7 @@ using mouse_lighting.Infrastructure.Commands;
 using System.Windows.Input;
 using System.Linq;
 using System.Windows.Controls;
+using mouse_lighting.Services.LightingHandlers;
 namespace mouse_lighting.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
@@ -47,23 +48,23 @@ namespace mouse_lighting.ViewModels
         public ObservableCollection<Color> Colors { get => _Colors; set => Set(ref _Colors, value); }
 
         private ObservableCollection<Lighting> _Names = new ObservableCollection<Lighting>() {
-        new Lighting(){Name = "Name 1", Guid = Guid.NewGuid(), Cycles = new ObservableCollection<LightingCycle>(){
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 50},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 100},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 150},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 200},
+        new Lighting(){Name = "Name 1", Guid = Guid.Parse("4ab3fe39-9546-455b-86b4-18cc165e3d9f"), Cycles = new ObservableCollection<LightingCycle>(){
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 20},
         } },
-         new Lighting(){Name = "Name 2", Guid = Guid.NewGuid(), Cycles = new ObservableCollection<LightingCycle>(){
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 50},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 100},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 150},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 200},
+         new Lighting(){Name = "Name 2", Guid = Guid.Parse("b1095166-e706-47df-bc1a-f246af930e5b"), Cycles = new ObservableCollection<LightingCycle>(){
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 20},
         } },
-          new Lighting(){Name = "Name 3", Guid = Guid.NewGuid(), Cycles = new ObservableCollection<LightingCycle>(){
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 50},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 100},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 150},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 200},
+          new Lighting(){Name = "Name 3", Guid = Guid.Parse("ea8f2706-0959-4c99-8be9-8c929ff4b57c"), Cycles = new ObservableCollection<LightingCycle>(){
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 20},
+            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 20},
         } },
         };
 
@@ -85,6 +86,18 @@ namespace mouse_lighting.ViewModels
         private ObservableCollection<LightingCycle> _Cycles;
         public ObservableCollection<LightingCycle> Cycles { get => _Cycles; set => Set(ref _Cycles, value); }
 
+        private int _IndexLightingCycle;
+        public int IndexLightingCycle
+        {
+            get => _IndexLightingCycle;
+            set
+            {
+                if (Set(ref _IndexLightingCycle, value))
+                {
+                    Status = value.ToString();
+                }
+            }
+        }
 
         #region AddNewLightingCommand - описание команды 
         private LambdaCommand _AddNewLightingCommand;
@@ -113,7 +126,6 @@ namespace mouse_lighting.ViewModels
         }
         #endregion
 
-
         #region AddNewCycleCommand - описание команды 
         private LambdaCommand _AddNewCycleCommand;
         public ICommand AddNewCycleCommand => _AddNewCycleCommand ??=
@@ -124,7 +136,6 @@ namespace mouse_lighting.ViewModels
             Cycles.Add(new());
         }
         #endregion
-
 
         #region RemoveCycleCommand - описание команды 
         private LambdaCommand _RemoveCycleCommand;
@@ -144,14 +155,17 @@ namespace mouse_lighting.ViewModels
         }
         #endregion
 
-
         #region ExportToXmlLightingFileCommand - описание команды 
         private LambdaCommand _ExportToXmlLightingFileCommand;
         public ICommand ExportToXmlLightingFileCommand => _ExportToXmlLightingFileCommand ??=
             new LambdaCommand(OnExportToXmlLightingFileCommandExecuted, CanExportToXmlLightingFileCommandExecute);
         private bool CanExportToXmlLightingFileCommandExecute(object p) => SelectedLighting != null;
+        LightingHandlerCreator LightingHandlerCreator = new LightingHandlerCreator();
         private void OnExportToXmlLightingFileCommandExecuted(object p)
         {
+            if (SelectedLighting == null) { throw new ArgumentNullException(nameof(SelectedLighting)); }
+            List<FrameCycle> frames = LightingHandlerCreator.Worker(SelectedLighting);
+            _DataService.Save(SelectedLighting, frames);
             Status = "TODO export in xml";
         }
         #endregion
@@ -185,24 +199,9 @@ namespace mouse_lighting.ViewModels
             Cycles.RemoveAt(i - 1);
 
             Cycles.Insert(i, temp);
-            IndexLightingCycle = i;
+            IndexLightingCycle = -1;
         }
         #endregion
-
-
-        private int _IndexLightingCycle;
-        public int IndexLightingCycle
-        {
-            get => _IndexLightingCycle;
-            set
-            {
-                if (Set(ref _IndexLightingCycle, value))
-                {
-                    Status = value.ToString();
-                }
-            }
-        }
-
 
         #region DownCyrcleCommand - описание команды 
         private LambdaCommand _DownCycleCommand;
@@ -232,8 +231,8 @@ namespace mouse_lighting.ViewModels
             var temp = Cycles[i];
             Cycles.RemoveAt(i);
 
-            Cycles.Insert(i+1, temp);
-            IndexLightingCycle = i;
+            Cycles.Insert(i + 1, temp);
+            IndexLightingCycle = -1;
         }
         #endregion
 
