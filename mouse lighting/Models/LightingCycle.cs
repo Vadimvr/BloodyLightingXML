@@ -27,8 +27,8 @@ namespace mouse_lighting.Models
         public Color ColorWheelEnd { get; set; } = Color.FromRgb(0, 0, 0);
         public Color ColorSecondStart { get; set; } = Color.FromRgb(0, 0, 0);
         public Color ColorSecondEnd { get; set; } = Color.FromRgb(0, 0, 0);
-        public float DisplayTime { get; set; } = 10;
-        public int Step { get; set; } = 10;
+        public float DisplayTime { get; set; } = 1;
+        public int Step { get; set; } = 32;
         public LightingHandlersEnum Handler { get; set; } = LightingHandlersEnum.ShowHide;
     }
     public class FrameCycle

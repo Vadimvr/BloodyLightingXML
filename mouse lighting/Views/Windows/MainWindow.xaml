@@ -6,20 +6,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:l="clr-namespace:mouse_lighting"
         xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
-        xmlns:persons="clr-namespace:mouse_lighting.Resources.Converters"
         xmlns:enums="clr-namespace:mouse_lighting.Services.LightingHandlers"
         DataContext="{Binding MainWindowModel, Source={StaticResource Locator}}"
         Title="{Binding Title}"
+        xmlns:view="clr-namespace:mouse_lighting.Views.View"
         Width="800"
         Height="450">
     <Window.Resources>
-        <ObjectDataProvider x:Key="myEnumData"
-                            MethodName="GetValues"
-                            ObjectType="{x:Type enums:LightingHandlersEnum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="enums:LightingHandlersEnum" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
+      
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top"
@@ -46,144 +40,10 @@
                 <ColumnDefinition></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition Height="1*"></RowDefinition>
+                <RowDefinition Height="4*"></RowDefinition>
             </Grid.RowDefinitions>
-            <DockPanel Grid.Row="1">
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="30"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <DataGrid ItemsSource="{ Binding Path=Names}"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              ColumnWidth="*"
-                              IsReadOnly="False"
-                              CanUserReorderColumns="False"
-                              SelectedItem="{Binding Path=SelectedLighting, Mode=OneWayToSource}">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="Lighting name"
-                                                Binding="{Binding Path=Name}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <Button Grid.Row="1"
-                            Content="Add"
-                            Height="30"
-                            Command="{Binding AddNewLightingCommand}" />
-                </Grid>
-            </DockPanel>
-            <DockPanel Grid.Row="1"
-                       Grid.Column="1">
-                <Grid Grid.Row="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"></RowDefinition>
-                        <RowDefinition Height="30"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0"
-                              CanUserSortColumns="False"
-                              ItemsSource="{ Binding Path=Cycles}"
-                              AutoGenerateColumns="False"
-                              CanUserAddRows="False"
-                              SelectionMode="Single"
-                              ColumnWidth="*"
-                              SelectedIndex="{Binding IndexLightingCycle}"
-                              CanUserReorderColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Color Wheel Start">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <xctk:ColorPicker SelectedColor="{Binding ColorWheelStart, UpdateSourceTrigger=PropertyChanged}"
-                                                          DisplayColorAndName="True"
-                                                          UsingAlphaChannel="False" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Color Wheel End">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <xctk:ColorPicker SelectedColor="{Binding ColorWheelEnd, UpdateSourceTrigger=PropertyChanged}"
-                                                          DisplayColorAndName="True"
-                                                          UsingAlphaChannel="False" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Color Second Start">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <xctk:ColorPicker SelectedColor="{Binding ColorSecondStart, UpdateSourceTrigger=PropertyChanged}"
-                                                          DisplayColorAndName="True"
-                                                          UsingAlphaChannel="False" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTemplateColumn Header="Color Second Start">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <xctk:ColorPicker SelectedColor="{Binding ColorSecondEnd, UpdateSourceTrigger=PropertyChanged}"
-                                                          DisplayColorAndName="True"
-                                                          UsingAlphaChannel="False" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                            <DataGridTextColumn Header="Step"
-                                                Binding="{Binding Step}" />
-                            <DataGridTextColumn Header="Display time"
-                                                Binding="{Binding DisplayTime}" />
-                            <DataGridTextColumn Header="Id"
-                                                Binding="{Binding Id}" />
-                            <DataGridComboBoxColumn Header="Handler"
-                                                    ItemsSource="{Binding Source={StaticResource myEnumData}, Mode=OneTime}"
-                                                    SelectedItemBinding="{Binding Handler}" />
-                            <DataGridTemplateColumn Header="Move"
-                                                    Width="20">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <StackPanel>
-                                            <Button CommandParameter="{Binding Path=Id}"
-                                                    Height="20"
-                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.UpCycleCommand}">
-                                                <Path Fill="Black"
-                                                      Data="M 0 6 L 12 6 L 6 0 Z" />
-                                            </Button>
-                                            <Button CommandParameter="{Binding Path=Id}"
-                                                    Height="20"
-                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.DownCycleCommand}">
-                                                <Path Fill="Black"
-                                                      Data="M 0 0 L 6 6 L 12 0 Z" />
-                                            </Button>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-
-                            <DataGridTemplateColumn Header="Delete cycle"
-                                                    Width="80">
-                                <DataGridTemplateColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button CommandParameter="{Binding Path=Id}"
-                                                Content="Delete"
-                                                Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}, Path=DataContext.RemoveCycleCommand}" />
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>
-                        </DataGrid.Columns>
-                    </DataGrid>
-                    <StackPanel Grid.Row="1"
-                                Orientation="Horizontal"
-                                HorizontalAlignment="Right">
-                        <Button Content="Export"
-                                Height="30"
-                                Width="100"
-                                Command="{Binding ExportToXmlLightingFileCommand}" />
-                        <Button Content="Add"
-                                Height="30"
-                                Width="100"
-                                Command="{Binding AddNewCycleCommand}" />
-                    </StackPanel>
-                </Grid>
-            </DockPanel>
+            <view:LightingView Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2"/>
         </Grid>
     </DockPanel>
 </Window>
