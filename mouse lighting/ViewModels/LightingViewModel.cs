@@ -6,6 +6,7 @@ using System.Windows.Input;
 using System;
 using mouse_lighting.Services.Interfaces;
 using System.Windows.Media;
+using System.Linq;
 
 namespace mouse_lighting.ViewModels
 {
@@ -24,32 +25,26 @@ namespace mouse_lighting.ViewModels
             _LightingCycleViewMode = LightingCycleViewMode;
             _UserDialog = UserDialog;
             _DataService = DataService;
+            mouse_lighting.Models.Lighting.NameChanged += LightingNameChanged;
+
+            SetDataFromDb();
+        }
+
+        private void LightingNameChanged(string name, string value, int id)
+        {
+            var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == id);
+            if(lighting != null)
+            {
+                lighting.Name = name;
+                _DataService.DB.Lighting.Update(lighting);
+                _DataService.DB.SaveChanges();
+            }
         }
 
         private ObservableCollection<Color> _Colors;
         public ObservableCollection<Color> Colors { get => _Colors; set => Set(ref _Colors, value); }
 
-        private ObservableCollection<Lighting> _Lighting = new ObservableCollection<Lighting>() {
-        new Lighting(){Name = "Name 1", Guid = Guid.Parse("4ab3fe39-9546-455b-86b4-18cc165e3d9f"), Cycles = new ObservableCollection<LightingCycle>(){
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,1,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 20},
-        } },
-         new Lighting(){Name = "Name 2", Guid = Guid.Parse("b1095166-e706-47df-bc1a-f246af930e5b"), Cycles = new ObservableCollection<LightingCycle>(){
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,2,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 20},
-        } },
-          new Lighting(){Name = "Name 3", Guid = Guid.Parse("ea8f2706-0959-4c99-8be9-8c929ff4b57c"), Cycles = new ObservableCollection<LightingCycle>(){
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,1), ColorSecondStart = Color.FromRgb(255,255,1), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,2), ColorSecondStart = Color.FromRgb(255,255,2), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,3), ColorSecondStart = Color.FromRgb(255,255,3), DisplayTime =5, Step = 20},
-            new LightingCycle(){ColorWheelStart = Color.FromRgb(255,3,4), ColorSecondStart = Color.FromRgb(255,255,4), DisplayTime =5, Step = 20},
-        } },
-        };
-
+        private ObservableCollection<Lighting> _Lighting;
         public ObservableCollection<Lighting> Lighting { get => _Lighting; set => Set(ref _Lighting, value); }
 
         private Lighting _SelectedLighting;
@@ -88,8 +83,24 @@ namespace mouse_lighting.ViewModels
                     newName = $"{defNewName}_{j}";
                 }
             }
-            Lighting.Add(new Lighting() { Cycles = new ObservableCollection<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
+
+            _DataService.DB.Lighting.Add(new Lighting() { Cycles = new ObservableCollection<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
+            _DataService.DB.SaveChanges();
+            SetDataFromDb();
         }
         #endregion
+
+        private void SetDataFromDb()
+        {
+            var x = _DataService.DB.Lighting;
+            foreach (var cycles in x)
+            {
+                foreach (var cycle in cycles.Cycles)
+                {
+                    cycle.SetColorFromString();
+                }
+            }
+            Lighting = new ObservableCollection<Lighting>(x);
+        }
     }
 }

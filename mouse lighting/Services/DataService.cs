@@ -1,4 +1,5 @@
 ﻿using mouse_lighting.Models;
+using mouse_lighting.Services.db;
 using mouse_lighting.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,17 @@ namespace mouse_lighting.Services
 {
     internal class DataService : IDataService
     {
+        private ApplicationContextSqLite _appContext;
+        public ApplicationContextSqLite DB => _appContext;
+      
+        public DataService()
+        {
+            _appContext = new ApplicationContextSqLite();
+            _appContext.Database.EnsureCreated();
+        }
         static string path = "C:\\Program Files (x86)\\BloodyWorkShop8\\BloodyWorkShop8\\Accounts\\Guest\\Data\\English\\SLED\\Standard2_V8MMax";
         static string path_1 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
         public void Save(Lighting lighting, List<FrameCycle> frames)
         {
             SaveToXML(lighting, frames);

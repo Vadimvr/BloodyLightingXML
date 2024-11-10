@@ -18,10 +18,6 @@ namespace mouse_lighting.ViewModels
         private IUserDialog _UserDialog;
         private IDataService _DataService;
 
-
-        private int _Name = 148;
-        public int Name { get => _Name; set => Set(ref _Name, value); }
-
         public LightingCycleViewMode(
             IUserDialog UserDialog,
             IDataService DataService,
@@ -56,7 +52,26 @@ namespace mouse_lighting.ViewModels
         private bool CanAddNewCycleCommandExecute(object p) => Cycles != null;
         private void OnAddNewCycleCommandExecuted(object p)
         {
-            Cycles.Add(new());
+            var temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+            if (temp != null)
+            {
+                var index = -1;
+                foreach (var item in temp.Cycles)
+                {
+                    if (index < item.IndexNumber)
+                    {
+                        index = item.IndexNumber;
+                    }
+                }
+                temp.Cycles.Add(new() { IndexNumber = ++index });
+                _DataService.DB.SaveChanges();
+                temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+                if (temp != null)
+                {
+                    Cycles = new ObservableCollection<LightingCycle>(temp.Cycles.OrderBy(c => c.IndexNumber));
+                }
+
+            }
         }
         #endregion
 
@@ -68,12 +83,32 @@ namespace mouse_lighting.ViewModels
         private void OnRemoveCycleCommandExecuted(object p)
         {
             int id = (int)p;
-            var cycle = Cycles.FirstOrDefault(x => x.Id == id);
-            if (cycle == null)
+            var temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+            if (temp != null)
             {
-                throw new ArgumentNullException(nameof(cycle));
+                var index = 0;
+                var cycle = temp.Cycles.FirstOrDefault(x => x.Id == id);
+
+                index = cycle.IndexNumber;
+
+                _DataService.DB.Remove(cycle);
+                foreach (var item in temp.Cycles)
+                {
+                    if (index < item.IndexNumber)
+                    {
+                        item.IndexNumber -= 1;
+                        _DataService.DB.Update(item);
+                    }
+                }
+
+                _DataService.DB.SaveChanges();
+                temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+                if (temp != null)
+                {
+                    Cycles = new ObservableCollection<LightingCycle>(temp.Cycles.OrderBy(c => c.IndexNumber));
+                }
+
             }
-            Cycles.Remove(cycle);
 
         }
         #endregion
@@ -101,27 +136,30 @@ namespace mouse_lighting.ViewModels
         private void OnUpCycleCommandExecuted(object p)
         {
             int id = (int)p;
-            int i = 0;
-            for (; i < Cycles.Count; i++)
+
+            var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+            if (lighting != null)
             {
-                if (Cycles[i].Id == id)
+                var cycle_0 = lighting.Cycles.FirstOrDefault(x => x.Id == id);
+                if (cycle_0.IndexNumber == 0) { return; }
+
+                int index_0 = cycle_0.IndexNumber;
+                int index_1 = index_0 - 1;
+
+                var cycle_1 = lighting.Cycles.FirstOrDefault(x => x.IndexNumber == index_1);
+
+                cycle_0.IndexNumber = index_1;
+                cycle_1.IndexNumber = index_0;
+                _DataService.DB.Update(cycle_0);
+                _DataService.DB.Update(cycle_1);
+                _DataService.DB.SaveChanges();
+
+                lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+                if (lighting != null)
                 {
-                    break;
+                    Cycles = new ObservableCollection<LightingCycle>(lighting.Cycles.OrderBy(c => c.IndexNumber));
                 }
             }
-
-            if (i == Cycles.Count) { throw new ArgumentOutOfRangeException(nameof(Cycles)); }
-
-            if (i == 0)
-            {
-                _MainWindowViewModel.Status = "First item";
-                return;
-            }
-
-            var temp = Cycles[i - 1];
-            Cycles.RemoveAt(i - 1);
-
-            Cycles.Insert(i, temp);
             IndexLightingCycle = -1;
         }
         #endregion
@@ -135,29 +173,60 @@ namespace mouse_lighting.ViewModels
         private void OnDownCycleCommandExecuted(object p)
         {
             int id = (int)p;
-            int i = 0;
-            for (; i < Cycles.Count; i++)
+
+            var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+            if (lighting != null)
             {
-                if (Cycles[i].Id == id)
+                var cycle_0 = lighting.Cycles.FirstOrDefault(x => x.Id == id);
+
+                if (cycle_0.IndexNumber == lighting.Cycles.Count - 1) { return; }
+
+                int index_0 = cycle_0.IndexNumber;
+                int index_1 = index_0 + 1;
+
+                var cycle_1 = lighting.Cycles.FirstOrDefault(x => x.IndexNumber == index_1);
+
+                cycle_0.IndexNumber = index_1;
+                cycle_1.IndexNumber = index_0;
+                _DataService.DB.Update(cycle_0);
+                _DataService.DB.Update(cycle_1);
+                _DataService.DB.SaveChanges();
+
+                lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+                if (lighting != null)
                 {
-                    break;
+                    Cycles = new ObservableCollection<LightingCycle>(lighting.Cycles.OrderBy(c => c.IndexNumber));
                 }
             }
-
-            if (i == Cycles.Count) { throw new ArgumentOutOfRangeException(nameof(Cycles)); }
-
-            if (i == Cycles.Count - 1)
-            {
-                _MainWindowViewModel.Status = "last item";
-                return;
-            }
-
-            var temp = Cycles[i];
-            Cycles.RemoveAt(i);
-
-            Cycles.Insert(i + 1, temp);
             IndexLightingCycle = -1;
         }
         #endregion
+
+
+        #region SaveInDBCommand - описание команды 
+        private LambdaCommand _SaveInDBCommand;
+        public ICommand SaveInDBCommand => _SaveInDBCommand ??=
+            new LambdaCommand(OnSaveInDBCommandExecuted, CanSaveInDBCommandExecute);
+        private bool CanSaveInDBCommandExecute(object p) => true;
+        private void OnSaveInDBCommandExecuted(object p)
+        {
+            foreach (var item in Cycles)
+            {
+                var cycle = _DataService.DB.LightingCycles.FirstOrDefault(x => x.Id == item.Id);
+                if (cycle != null)
+                {
+                    cycle.Step = item.Step;
+                    cycle.DisplayTime = item.DisplayTime;
+                    cycle.ColorWheelStart = item.ColorWheelStart;
+                    cycle.ColorWheelEnd = item.ColorWheelEnd;
+                    cycle.ColorSecondStart = item.ColorSecondStart;
+                    cycle.ColorSecondEnd = item.ColorSecondEnd;
+                    _DataService.DB.Update(cycle);
+                }
+            }
+            _DataService.DB.SaveChanges();
+        }
+        #endregion
+
     }
 }

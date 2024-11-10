@@ -78,6 +78,8 @@
                                     Binding="{Binding DisplayTime}" />
                 <DataGridTextColumn Header="Id"
                                     Binding="{Binding Id}" />
+                <DataGridTextColumn Header="Index"
+                                    Binding="{Binding IndexNumber}" />
                 <DataGridComboBoxColumn Header="Handler"
                                         ItemsSource="{Binding Source={StaticResource myEnumData}, Mode=OneTime}"
                                         SelectedItemBinding="{Binding Handler}" />
@@ -118,6 +120,10 @@
         <StackPanel Grid.Row="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
+            <Button Content="Save in DB"
+                    Height="30"
+                    Width="100"
+                    Command="{Binding SaveInDBCommand}" />
             <Button Content="Export"
                     Height="30"
                     Width="100"

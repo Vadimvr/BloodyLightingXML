@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using mouse_lighting.Services.db;
 using mouse_lighting.Services.Interfaces;
 
 namespace mouse_lighting.Services

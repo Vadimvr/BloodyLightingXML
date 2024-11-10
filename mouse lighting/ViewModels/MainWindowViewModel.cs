@@ -31,6 +31,7 @@ namespace mouse_lighting.ViewModels
         {
             _UserDialog = UserDialog;
             _DataService = DataService;
+          var x =  _DataService.DB.Lighting;
         }
     }
 }
