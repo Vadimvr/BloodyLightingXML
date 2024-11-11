@@ -16,7 +16,7 @@ namespace BloodyLightingXML
         {
             string[] colors = new string[] { "#CF46FF", "#FFF265", "#12FFD9", "#FF2676" };
 
-            List<Frame> frames = new List<Frame>();
+            List<FrameCycle> frames = new List<FrameCycle>();
             LightingCycle lightingCycle1 = new LightingCycle()
             {
                 ColorWheelStart = (Color)ColorConverter.ConvertFromString("#FF0000"),
@@ -55,7 +55,7 @@ namespace BloodyLightingXML
             Save(frames);
         }
 
-        private static void FirstColorTransitionFormSecondColor(LightingCycle lightingCycle, List<Frame> frames)
+        private static void FirstColorTransitionFormSecondColor(LightingCycle lightingCycle, List<FrameCycle> frames)
         {
             List<List<string>> colors = new List<List<string>>();
             double displayTime = Math.Round(lightingCycle.DisplayTime / lightingCycle.Step, 3);
@@ -67,7 +67,7 @@ namespace BloodyLightingXML
             int frameIndex = 0;
             for (int i = 0; i < colors[0].Count; i++)
             {
-                frames.Add(new Frame() { DisplayTime = displayTime });
+                frames.Add(new FrameCycle() { DisplayTime = displayTime });
             }
             for (int i = 0; i < colors.Count; i++)
             {
@@ -142,7 +142,7 @@ namespace BloodyLightingXML
 
         private static string ToHex(Color c) => $"{c.B:X2}{c.G:X2}{c.R:X2}";
         private static string CWToHex(Color c) => $"{c.R:X2}{c.G:X2}{c.B:X2}";
-        private static void Save(List<Frame> frames)
+        private static void Save(List<FrameCycle> frames)
         {
             XDocument doc =
               new XDocument(
