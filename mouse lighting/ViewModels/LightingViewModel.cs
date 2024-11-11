@@ -26,7 +26,7 @@ namespace mouse_lighting.ViewModels
             _UserDialog = UserDialog;
             _DataService = DataService;
             mouse_lighting.Models.Lighting.NameChanged += LightingNameChanged;
-
+            UpdateCyclesView += _LightingCycleViewMode.UpdateCyclesView;
             SetDataFromDb();
         }
 
@@ -35,8 +35,8 @@ namespace mouse_lighting.ViewModels
             var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == id);
             if(lighting != null)
             {
-                lighting.Name = name;
-                _DataService.DB.Lighting.Update(lighting);
+                lighting.Name = value;
+                _DataService.DB.Update(lighting);
                 _DataService.DB.SaveChanges();
             }
         }
@@ -47,6 +47,7 @@ namespace mouse_lighting.ViewModels
         private ObservableCollection<Lighting> _Lighting;
         public ObservableCollection<Lighting> Lighting { get => _Lighting; set => Set(ref _Lighting, value); }
 
+        private Action<Lighting> UpdateCyclesView;
         private Lighting _SelectedLighting;
         public Lighting SelectedLighting
         {
@@ -55,7 +56,7 @@ namespace mouse_lighting.ViewModels
             {
                 if (Set(ref _SelectedLighting, value))
                 {
-                    _LightingCycleViewMode.Cycles = SelectedLighting.Cycles;
+                   UpdateCyclesView?.Invoke(SelectedLighting);
                 }
             }
         }
@@ -93,13 +94,6 @@ namespace mouse_lighting.ViewModels
         private void SetDataFromDb()
         {
             var x = _DataService.DB.Lighting;
-            foreach (var cycles in x)
-            {
-                foreach (var cycle in cycles.Cycles)
-                {
-                    cycle.SetColorFromString();
-                }
-            }
             Lighting = new ObservableCollection<Lighting>(x);
         }
     }

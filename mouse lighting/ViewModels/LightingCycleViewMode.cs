@@ -32,6 +32,14 @@ namespace mouse_lighting.ViewModels
         private ObservableCollection<LightingCycle> _Cycles;
         public ObservableCollection<LightingCycle> Cycles { get => _Cycles; set => Set(ref _Cycles, value); }
 
+        public void UpdateCyclesView(Lighting lighting)
+        {
+            if (lighting != null)
+            {
+                Cycles = new ObservableCollection<LightingCycle>(lighting.Cycles.OrderBy(c => c.IndexNumber));
+            }
+        }
+
         private int _IndexLightingCycle;
         public int IndexLightingCycle
         {
@@ -66,10 +74,7 @@ namespace mouse_lighting.ViewModels
                 temp.Cycles.Add(new() { IndexNumber = ++index });
                 _DataService.DB.SaveChanges();
                 temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-                if (temp != null)
-                {
-                    Cycles = new ObservableCollection<LightingCycle>(temp.Cycles.OrderBy(c => c.IndexNumber));
-                }
+                UpdateCyclesView(temp);
 
             }
         }
@@ -216,6 +221,7 @@ namespace mouse_lighting.ViewModels
                 if (cycle != null)
                 {
                     cycle.Step = item.Step;
+                    cycle.Handler = item.Handler;
                     cycle.DisplayTime = item.DisplayTime;
                     cycle.ColorWheelStart = item.ColorWheelStart;
                     cycle.ColorWheelEnd = item.ColorWheelEnd;

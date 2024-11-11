@@ -18,10 +18,14 @@ namespace mouse_lighting.Models
             get => name;
             set
             {
-                name = value;
                 if (Id > 0 && !name.Equals(value))
                 {
+                    name = value;
                     NameChanged?.Invoke(name, value, Id);
+                }
+                else
+                {
+                    name = value;
                 }
             }
         }
@@ -33,11 +37,6 @@ namespace mouse_lighting.Models
         public int Id { get; set; }
         public int IndexNumber { get; set; }
         public int LightingId { get; set; }
-        //public string ColorWheelStartString { get; set; } = "#000000";
-        //public string ColorWheelEndString { get; set; } = "#000000";
-        //public string ColorSecondStartString { get; set; } = "#000000";
-        //public string ColorSecondEndString { get; set; } = "#000000";
-
         public Color ColorWheelStart { get; set; } = Color.FromRgb(0, 0, 0);
         public Color ColorWheelEnd { get; set; } = Color.FromRgb(0, 0, 0);
         public Color ColorSecondStart { get; set; } = Color.FromRgb(0, 0, 0);
@@ -45,18 +44,6 @@ namespace mouse_lighting.Models
         public float DisplayTime { get; set; } = 1;
         public int Step { get; set; } = 32;
         public LightingHandlersEnum Handler { get; set; } = LightingHandlersEnum.ShowHide;
-
-        public void SetColorFromString()
-        {
-
-            //ColorWheelStart = (Color)ColorConverter.ConvertFromString(ColorWheelStartString);
-            //ColorWheelEnd = (Color)ColorConverter.ConvertFromString(ColorWheelEndString);
-            //ColorSecondStart = (Color)ColorConverter.ConvertFromString(ColorSecondStartString);
-            //ColorSecondEnd = (Color)ColorConverter.ConvertFromString(ColorSecondEndString);
-        }
-        public void SetStringFromColor()
-        {
-        }
 
     }
     public class FrameCycle
