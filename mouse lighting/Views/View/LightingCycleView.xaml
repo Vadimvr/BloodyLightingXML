@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:mouse_lighting.Views.View"
-             xmlns:enums="clr-namespace:mouse_lighting.Services.LightingHandlers"
+             xmlns:models="clr-namespace:Models;assembly=Models"
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              DataContext="{Binding LightingCycleViewModel, Source={StaticResource Locator}}"
              mc:Ignorable="d"
@@ -13,9 +13,9 @@
     <UserControl.Resources>
         <ObjectDataProvider x:Key="myEnumData"
                             MethodName="GetValues"
-                            ObjectType="{x:Type enums:LightingHandlersEnum}">
+                            ObjectType="{x:Type models:LightingHandlersEnum}">
             <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="enums:LightingHandlersEnum" />
+                <x:Type TypeName="models:LightingHandlersEnum" />
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>
     </UserControl.Resources>

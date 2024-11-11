@@ -1,5 +1,4 @@
 ﻿using mouse_lighting.Infrastructure.Commands;
-using mouse_lighting.Models;
 using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -7,6 +6,8 @@ using System;
 using mouse_lighting.Services.Interfaces;
 using System.Windows.Media;
 using System.Linq;
+using System.Collections.Generic;
+using Models;
 
 namespace mouse_lighting.ViewModels
 {
@@ -25,7 +26,7 @@ namespace mouse_lighting.ViewModels
             _LightingCycleViewMode = LightingCycleViewMode;
             _UserDialog = UserDialog;
             _DataService = DataService;
-            mouse_lighting.Models.Lighting.NameChanged += LightingNameChanged;
+            Models.Lighting.NameChanged += LightingNameChanged;
             UpdateCyclesView += _LightingCycleViewMode.UpdateCyclesView;
             SetDataFromDb();
         }
@@ -33,7 +34,7 @@ namespace mouse_lighting.ViewModels
         private void LightingNameChanged(string name, string value, int id)
         {
             var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == id);
-            if(lighting != null)
+            if (lighting != null)
             {
                 lighting.Name = value;
                 _DataService.DB.Update(lighting);
@@ -56,7 +57,7 @@ namespace mouse_lighting.ViewModels
             {
                 if (Set(ref _SelectedLighting, value))
                 {
-                   UpdateCyclesView?.Invoke(SelectedLighting);
+                    UpdateCyclesView?.Invoke(SelectedLighting);
                 }
             }
         }
@@ -85,7 +86,7 @@ namespace mouse_lighting.ViewModels
                 }
             }
 
-            _DataService.DB.Lighting.Add(new Lighting() { Cycles = new ObservableCollection<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
+            _DataService.DB.Lighting.Add(new Models.Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
             _DataService.DB.SaveChanges();
             SetDataFromDb();
         }

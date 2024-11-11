@@ -1,4 +1,4 @@
-﻿using mouse_lighting.Models;
+﻿using Models;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
@@ -33,12 +33,12 @@ namespace mouse_lighting.Services.LightingHandlers
         }
     }
 
-    enum LightingHandlersEnum
-    {
-        ShowHide,
-        Hide,
-        Show,
-    }
+    //public enum LightingHandlersEnum
+    //{
+    //    ShowHide,
+    //    Hide,
+    //    Show,
+    //}
 
     internal interface ILightingHandlerCycle
     {
@@ -51,7 +51,7 @@ namespace mouse_lighting.Services.LightingHandlers
         {
             System.Windows.Media.Color color_1 = lightingCycle.ColorWheelStart;
             int step = lightingCycle.Step;
-            var displayTime = Math.Round( lightingCycle.DisplayTime / step,3);
+            var displayTime = Math.Round(lightingCycle.DisplayTime / step, 3);
 
             double R = color_1.R;
             double G = color_1.G;

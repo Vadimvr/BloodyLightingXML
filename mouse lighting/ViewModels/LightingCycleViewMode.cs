@@ -1,5 +1,4 @@
 ﻿using mouse_lighting.Infrastructure.Commands;
-using mouse_lighting.Models;
 using mouse_lighting.Services.Interfaces;
 using mouse_lighting.ViewModels.Base;
 using System.Windows.Input;
@@ -8,6 +7,7 @@ using System.Linq;
 using System;
 using mouse_lighting.Services.LightingHandlers;
 using System.Collections.Generic;
+using Models;
 
 namespace mouse_lighting.ViewModels
 {
@@ -142,29 +142,18 @@ namespace mouse_lighting.ViewModels
         {
             int id = (int)p;
 
-            var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-            if (lighting != null)
-            {
-                var cycle_0 = lighting.Cycles.FirstOrDefault(x => x.Id == id);
-                if (cycle_0.IndexNumber == 0) { return; }
+            var cycle_0 = Cycles.FirstOrDefault(x => x.Id == id);
+            if (cycle_0.IndexNumber == 0) { return; }
 
-                int index_0 = cycle_0.IndexNumber;
-                int index_1 = index_0 - 1;
+            int index_0 = cycle_0.IndexNumber;
+            int index_1 = index_0 - 1;
 
-                var cycle_1 = lighting.Cycles.FirstOrDefault(x => x.IndexNumber == index_1);
+            var cycle_1 = Cycles.FirstOrDefault(x => x.IndexNumber == index_1);
 
-                cycle_0.IndexNumber = index_1;
-                cycle_1.IndexNumber = index_0;
-                _DataService.DB.Update(cycle_0);
-                _DataService.DB.Update(cycle_1);
-                _DataService.DB.SaveChanges();
+            cycle_0.IndexNumber = index_1;
+            cycle_1.IndexNumber = index_0;
 
-                lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-                if (lighting != null)
-                {
-                    Cycles = new ObservableCollection<LightingCycle>(lighting.Cycles.OrderBy(c => c.IndexNumber));
-                }
-            }
+            Cycles = new ObservableCollection<LightingCycle>(Cycles.OrderBy(c => c.IndexNumber));
             IndexLightingCycle = -1;
         }
         #endregion
@@ -179,30 +168,21 @@ namespace mouse_lighting.ViewModels
         {
             int id = (int)p;
 
-            var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-            if (lighting != null)
-            {
-                var cycle_0 = lighting.Cycles.FirstOrDefault(x => x.Id == id);
 
-                if (cycle_0.IndexNumber == lighting.Cycles.Count - 1) { return; }
+            var cycle_0 = Cycles.FirstOrDefault(x => x.Id == id);
 
-                int index_0 = cycle_0.IndexNumber;
-                int index_1 = index_0 + 1;
+            if (cycle_0.IndexNumber == Cycles.Count - 1) { return; }
 
-                var cycle_1 = lighting.Cycles.FirstOrDefault(x => x.IndexNumber == index_1);
+            int index_0 = cycle_0.IndexNumber;
+            int index_1 = index_0 + 1;
 
-                cycle_0.IndexNumber = index_1;
-                cycle_1.IndexNumber = index_0;
-                _DataService.DB.Update(cycle_0);
-                _DataService.DB.Update(cycle_1);
-                _DataService.DB.SaveChanges();
+            var cycle_1 = Cycles.FirstOrDefault(x => x.IndexNumber == index_1);
 
-                lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-                if (lighting != null)
-                {
-                    Cycles = new ObservableCollection<LightingCycle>(lighting.Cycles.OrderBy(c => c.IndexNumber));
-                }
-            }
+            cycle_0.IndexNumber = index_1;
+            cycle_1.IndexNumber = index_0;
+
+
+            Cycles = new ObservableCollection<LightingCycle>(Cycles.OrderBy(c => c.IndexNumber));
             IndexLightingCycle = -1;
         }
         #endregion
@@ -217,18 +197,7 @@ namespace mouse_lighting.ViewModels
         {
             foreach (var item in Cycles)
             {
-                var cycle = _DataService.DB.LightingCycles.FirstOrDefault(x => x.Id == item.Id);
-                if (cycle != null)
-                {
-                    cycle.Step = item.Step;
-                    cycle.Handler = item.Handler;
-                    cycle.DisplayTime = item.DisplayTime;
-                    cycle.ColorWheelStart = item.ColorWheelStart;
-                    cycle.ColorWheelEnd = item.ColorWheelEnd;
-                    cycle.ColorSecondStart = item.ColorSecondStart;
-                    cycle.ColorSecondEnd = item.ColorSecondEnd;
-                    _DataService.DB.Update(cycle);
-                }
+                _DataService.DB.Update(item);
             }
             _DataService.DB.SaveChanges();
         }
