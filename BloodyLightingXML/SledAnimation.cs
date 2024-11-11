@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Media;
 using System.Xml.Serialization;
 
 namespace BloodyLightingXML
@@ -25,4 +21,6 @@ namespace BloodyLightingXML
         public List<string> ColorPicture { get; set; } = (new string[18]).Select(x => x = "000000").ToList();
         public double DisplayTime { get; set; } = 0.005;
     }
+
+ 
 }
