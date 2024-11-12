@@ -63,7 +63,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Color Second Start">
+                <DataGridTemplateColumn Header="Color Second End">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:ColorPicker SelectedColor="{Binding ColorSecondEnd, UpdateSourceTrigger=PropertyChanged}"

@@ -4,6 +4,7 @@ namespace mouse_lighting.ViewModels
 {
     internal class MainWindowViewModel : ViewModel
     {
+        private IDataTransferBetweenViews _DataTransfer;
         private readonly IUserDialog _UserDialog;
         private readonly IDataService _DataService;
 
@@ -27,11 +28,16 @@ namespace mouse_lighting.ViewModels
 
         #endregion
 
-        public MainWindowViewModel(IUserDialog UserDialog, IDataService DataService)
+        public MainWindowViewModel(IUserDialog UserDialog, IDataService DataService, IDataTransferBetweenViews DataTransfer)
         {
+            _DataTransfer = DataTransfer;
             _UserDialog = UserDialog;
             _DataService = DataService;
-          var x =  _DataService.DB.Lighting;
+            _DataTransfer.PrintInStatusEvent += PrintInStatus;
+        }
+        internal void PrintInStatus(string status)
+        {
+            Status = status;
         }
     }
 }

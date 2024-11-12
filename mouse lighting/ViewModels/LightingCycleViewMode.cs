@@ -13,31 +13,29 @@ namespace mouse_lighting.ViewModels
 {
     internal class LightingCycleViewMode : ViewModel
     {
-        public LightingViewModel _LightingViewModel;
-        private MainWindowViewModel _MainWindowViewModel;
+        private IDataTransferBetweenViews _DataTransferView;
         private IUserDialog _UserDialog;
         private IDataService _DataService;
 
         public LightingCycleViewMode(
             IUserDialog UserDialog,
             IDataService DataService,
-            MainWindowViewModel MainWindowViewModel
-            )
+            IDataTransferBetweenViews dataTransferView)
         {
             _UserDialog = UserDialog;
             _DataService = DataService;
-            _MainWindowViewModel = MainWindowViewModel;
+            _DataTransferView = dataTransferView;
+            _DataTransferView.UpdateSelectedLighting += UpdateCyclesView;
         }
 
         private ObservableCollection<LightingCycle> _Cycles;
         public ObservableCollection<LightingCycle> Cycles { get => _Cycles; set => Set(ref _Cycles, value); }
 
-        public void UpdateCyclesView(Lighting lighting)
+        public void UpdateCyclesView()
         {
-            if (lighting != null)
-            {
-                Cycles = new ObservableCollection<LightingCycle>(lighting.Cycles.OrderBy(c => c.IndexNumber));
-            }
+            Cycles = new ObservableCollection<LightingCycle>(_DataService.DB.LightingCycles
+                .Where(x => x.LightingId == _DataTransferView.Id)
+                .OrderBy(c => c.IndexNumber));
         }
 
         private int _IndexLightingCycle;
@@ -48,7 +46,7 @@ namespace mouse_lighting.ViewModels
             {
                 if (Set(ref _IndexLightingCycle, value))
                 {
-                    _MainWindowViewModel.Status = value.ToString();
+                    _DataTransferView.Status(value.ToString());
                 }
             }
         }
@@ -60,22 +58,20 @@ namespace mouse_lighting.ViewModels
         private bool CanAddNewCycleCommandExecute(object p) => Cycles != null;
         private void OnAddNewCycleCommandExecuted(object p)
         {
-            var temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-            if (temp != null)
+            var Lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == _DataTransferView.Id);
+            if (Lighting != null)
             {
                 var index = -1;
-                foreach (var item in temp.Cycles)
+                foreach (var item in Lighting.Cycles)
                 {
                     if (index < item.IndexNumber)
                     {
                         index = item.IndexNumber;
                     }
                 }
-                temp.Cycles.Add(new() { IndexNumber = ++index });
+                Lighting.Cycles.Add(new() { IndexNumber = ++index });
                 _DataService.DB.SaveChanges();
-                temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-                UpdateCyclesView(temp);
-
+                UpdateCyclesView();
             }
         }
         #endregion
@@ -88,16 +84,14 @@ namespace mouse_lighting.ViewModels
         private void OnRemoveCycleCommandExecuted(object p)
         {
             int id = (int)p;
-            var temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
+            var temp = _DataService.DB.LightingCycles.FirstOrDefault(x => x.Id == id);
             if (temp != null)
             {
                 var index = 0;
-                var cycle = temp.Cycles.FirstOrDefault(x => x.Id == id);
 
-                index = cycle.IndexNumber;
+                index = temp.IndexNumber;
 
-                _DataService.DB.Remove(cycle);
-                foreach (var item in temp.Cycles)
+                foreach (var item in Cycles)
                 {
                     if (index < item.IndexNumber)
                     {
@@ -106,13 +100,12 @@ namespace mouse_lighting.ViewModels
                     }
                 }
 
+                _DataService.DB.Remove(temp);
                 _DataService.DB.SaveChanges();
-                temp = _DataService.DB.Lighting.FirstOrDefault(x => x.Guid == _LightingViewModel.SelectedLighting.Guid);
-                if (temp != null)
-                {
-                    Cycles = new ObservableCollection<LightingCycle>(temp.Cycles.OrderBy(c => c.IndexNumber));
-                }
 
+                Cycles = new ObservableCollection<LightingCycle>(_DataService.DB.LightingCycles
+                    .Where(x => x.LightingId == _DataTransferView.Id)
+                    .OrderBy(x => x.IndexNumber));
             }
 
         }
@@ -122,14 +115,19 @@ namespace mouse_lighting.ViewModels
         private LambdaCommand _ExportToXmlLightingFileCommand;
         public ICommand ExportToXmlLightingFileCommand => _ExportToXmlLightingFileCommand ??=
             new LambdaCommand(OnExportToXmlLightingFileCommandExecuted, CanExportToXmlLightingFileCommandExecute);
-        private bool CanExportToXmlLightingFileCommandExecute(object p) => _LightingViewModel.SelectedLighting != null;
+        private bool CanExportToXmlLightingFileCommandExecute(object p) => _DataTransferView.Id > 0;
         LightingHandlerCreator LightingHandlerCreator = new LightingHandlerCreator();
         private void OnExportToXmlLightingFileCommandExecuted(object p)
         {
-            if (_LightingViewModel.SelectedLighting == null) { throw new ArgumentNullException(nameof(_LightingViewModel.SelectedLighting)); }
-            List<FrameCycle> frames = LightingHandlerCreator.Worker(_LightingViewModel.SelectedLighting);
-            _DataService.Save(_LightingViewModel.SelectedLighting, frames);
-            _MainWindowViewModel.Status = "TODO export in xml";
+            var lighting = _DataService.DB.Lighting
+                .FirstOrDefault(x => x.Id == _DataTransferView.Id);
+            if (lighting != null)
+            {
+                List<FrameCycle> frames = LightingHandlerCreator
+                    .Worker(lighting);
+                _DataService.Save(lighting, frames);
+                _DataTransferView.Status($"TODO export in File_{_DataTransferView.Guid}.xml");
+            }
         }
         #endregion
 
@@ -187,12 +185,11 @@ namespace mouse_lighting.ViewModels
         }
         #endregion
 
-
         #region SaveInDBCommand - описание команды 
         private LambdaCommand _SaveInDBCommand;
         public ICommand SaveInDBCommand => _SaveInDBCommand ??=
             new LambdaCommand(OnSaveInDBCommandExecuted, CanSaveInDBCommandExecute);
-        private bool CanSaveInDBCommandExecute(object p) => true;
+        private bool CanSaveInDBCommandExecute(object p) => _DataTransferView.Id > 0;
         private void OnSaveInDBCommandExecuted(object p)
         {
             foreach (var item in Cycles)

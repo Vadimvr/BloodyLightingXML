@@ -13,21 +13,19 @@ namespace mouse_lighting.ViewModels
 {
     internal class LightingViewModel : ViewModel
     {
-        private LambdaCommand _DownCycleCommand;
+        private IDataTransferBetweenViews _DataTransferView;
         private MainWindowViewModel _MainWindowViewModel;
-        private LightingCycleViewMode _LightingCycleViewMode;
         private IUserDialog _UserDialog;
         private IDataService _DataService;
 
-        public LightingViewModel(IUserDialog UserDialog, IDataService DataService, MainWindowViewModel mainWindowViewModel, LightingCycleViewMode LightingCycleViewMode)
+        public LightingViewModel(IUserDialog UserDialog,
+            IDataService DataService,
+            IDataTransferBetweenViews dataTransferView)
         {
-            LightingCycleViewMode._LightingViewModel = this;
-            _MainWindowViewModel = mainWindowViewModel;
-            _LightingCycleViewMode = LightingCycleViewMode;
+            _DataTransferView = dataTransferView;
             _UserDialog = UserDialog;
             _DataService = DataService;
             Models.Lighting.NameChanged += LightingNameChanged;
-            UpdateCyclesView += _LightingCycleViewMode.UpdateCyclesView;
             SetDataFromDb();
         }
 
@@ -57,7 +55,7 @@ namespace mouse_lighting.ViewModels
             {
                 if (Set(ref _SelectedLighting, value))
                 {
-                    UpdateCyclesView?.Invoke(SelectedLighting);
+                    _DataTransferView.SetLighting(_SelectedLighting);
                 }
             }
         }
