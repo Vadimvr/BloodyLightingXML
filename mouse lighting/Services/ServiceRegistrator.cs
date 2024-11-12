@@ -1,8 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using mouse_lighting.Services.db;
+﻿using Microsoft.Extensions.DependencyInjection;
 using mouse_lighting.Services.Interfaces;
-using static mouse_lighting.Services.Interfaces.IDataTransferBetweenViews;
 
 namespace mouse_lighting.Services
 {

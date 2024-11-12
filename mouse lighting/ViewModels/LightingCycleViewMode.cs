@@ -4,7 +4,6 @@ using mouse_lighting.ViewModels.Base;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System;
 using mouse_lighting.Services.LightingHandlers;
 using System.Collections.Generic;
 using Models;

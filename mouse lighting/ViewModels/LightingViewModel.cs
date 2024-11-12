@@ -14,7 +14,6 @@ namespace mouse_lighting.ViewModels
     internal class LightingViewModel : ViewModel
     {
         private IDataTransferBetweenViews _DataTransferView;
-        private MainWindowViewModel _MainWindowViewModel;
         private IUserDialog _UserDialog;
         private IDataService _DataService;
 
@@ -46,7 +45,6 @@ namespace mouse_lighting.ViewModels
         private ObservableCollection<Lighting> _Lighting;
         public ObservableCollection<Lighting> Lighting { get => _Lighting; set => Set(ref _Lighting, value); }
 
-        private Action<Lighting> UpdateCyclesView;
         private Lighting _SelectedLighting;
         public Lighting SelectedLighting
         {

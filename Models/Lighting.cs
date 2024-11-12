@@ -49,11 +49,4 @@ namespace Models
         public List<string> ColorPicture { get; set; } = (new string[18]).Select(x => x = "000000").ToList();
         public double DisplayTime { get; set; } = 0.005;
     }
-
-    public enum LightingHandlersEnum
-    {
-        ShowHide,
-        Hide,
-        Show,
-    }
 }
