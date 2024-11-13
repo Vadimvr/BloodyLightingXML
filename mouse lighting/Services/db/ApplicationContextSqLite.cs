@@ -5,22 +5,23 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Media;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace mouse_lighting.Services.db
 {
-    internal interface IAppContext
-    {
-        public List<Lighting> Lighting { get; }
-        public void Update();
-
-        public void Save();
-    }
-
     public class ApplicationContextSqLite : DbContext
     {
-        public ApplicationContextSqLite()
+        string endFolder;
+        public ApplicationContextSqLite(string PathToDb)
         {
-             // Database.EnsureDeleted();
+            if (string.IsNullOrEmpty(PathToDb))
+            {
+                throw new ArgumentNullException(nameof(PathToDb));
+            }
+            else
+            {
+                endFolder = PathToDb;
+            }
             Database.EnsureCreated();
         }
         internal DbSet<Lighting> Lighting { get; set; }
@@ -28,8 +29,6 @@ namespace mouse_lighting.Services.db
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var userDocument = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var endFolder = userDocument + "\\SLED";
 
             if (!Directory.Exists(endFolder))
             {
@@ -50,11 +49,17 @@ namespace mouse_lighting.Services.db
 
         }
     }
-
     public class ColorEFConverter : ValueConverter<Color, string>
     {
         public ColorEFConverter() : base(v => v.ToString(), v => (Color)ColorConverter.ConvertFromString(v))
         {
         }
+    }
+    internal interface IAppContext
+    {
+        public List<Lighting> Lighting { get; }
+        public void Update();
+
+        public void Save();
     }
 }

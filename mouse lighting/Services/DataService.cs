@@ -1,6 +1,7 @@
 ﻿using Models;
 using mouse_lighting.Services.db;
 using mouse_lighting.Services.Interfaces;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,22 +13,44 @@ namespace mouse_lighting.Services
 {
     internal class DataService : IDataService
     {
+        private readonly string _path = "C:\\Program Files (x86)\\BloodyWorkShop8\\BloodyWorkShop8\\Accounts\\Guest\\Data\\English\\SLED\\Standard2_V8MMax";
+        private readonly string _pathToDb = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "\\SLED";
         private ApplicationContextSqLite _appContext;
         public ApplicationContextSqLite DB => _appContext;
-      
-        public DataService()
-        {
-            _appContext = new ApplicationContextSqLite();
-            _appContext.Database.EnsureCreated();
-        }
-        static string path = "C:\\Program Files (x86)\\BloodyWorkShop8\\BloodyWorkShop8\\Accounts\\Guest\\Data\\English\\SLED\\Standard2_V8MMax";
-        static string path_1 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
-        public void Save(Lighting lighting, List<FrameCycle> frames)
+        static string path_1 = string.Empty;
+        static string path = string.Empty;
+        private ILocalData _localData;
+        public Setting Setting { get; set; }
+
+        public DataService(ILocalData localData)
         {
-            SaveToXML(lighting, frames);
+            _localData = localData;
+            Setting = _localData.LoadSetting();
+            if (Setting == null)
+            {
+                Setting = new Setting()
+                {
+                    PathToXML = _path,
+                    PathToDb = _pathToDb
+                };
+            }
+            _appContext = new ApplicationContextSqLite(Setting.PathToDb);
+            path = Setting.PathToXML;
+            path_1 = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
         }
-        private static void SaveToXML(Lighting lighting, List<FrameCycle> frames)
+        public void SaveSetting()
+        {
+            if (Setting != null)
+            {
+                _localData.SaveSetting(Setting);
+            }
+        }
+        public void SaveToXML(Lighting lighting, List<FrameCycle> frames)
+        {
+            DataService.Save(lighting, frames);
+        }
+        private static void Save(Lighting lighting, List<FrameCycle> frames)
         {
             var fileName = $"File_{lighting.Guid.ToString().ToUpper()}";
             XDocument doc =
@@ -49,20 +72,58 @@ namespace mouse_lighting.Services
                             )
             )
             );
-            using (StreamWriter sw =
-
-                new StreamWriter($"{path}\\{fileName}.xml", false, Encoding.Unicode))
-            {
-                doc.Save(sw);
-            }
-            using (StreamWriter sw =
-
-              new StreamWriter($"{path_1}\\{fileName}.xml", false, Encoding.Unicode))
-            {
-                doc.Save(sw);
-            }
+            SaveInFile(path_1, fileName, doc);
+            SaveInFile(path, fileName, doc);
         }
 
+        private static void SaveInFile(string path, string fileName, XDocument doc)
+        {
+            if (Path.Exists(path))
+            {
+                using (StreamWriter sw = new StreamWriter($"{path}\\{fileName}.xml", false, Encoding.Unicode))
+                {
+                    doc.Save(sw);
+                }
+            }
+        }
+    }
+    public interface ILocalData
+    {
+        Setting LoadSetting();
+        void SaveSetting(Setting setting);
+    }
+
+    public class LocalData : ILocalData
+    {
+
+
+        static string pathToSetting = $"{AppDomain.CurrentDomain.BaseDirectory}//setting.json";
+        public Setting LoadSetting()
+        {
+            Setting setting = null;
+            if (File.Exists(pathToSetting))
+            {
+                using (StreamReader sr = new StreamReader(pathToSetting, Encoding.Unicode))
+                {
+                    string line = sr.ReadToEnd();
+                    setting = JsonConvert.DeserializeObject<Setting>(line);
+                }
+            }
+            return setting;
+        }
+        public void SaveSetting(Setting setting)
+        {
+            using (StreamWriter sw = new StreamWriter(pathToSetting, false, Encoding.UTF8))
+            {
+                sw.Write(JsonConvert.SerializeObject(setting));
+            }
+        }
+    }
+
+    public class Setting
+    {
+        public string PathToXML { get; set; } = "C:\\Program Files (x86)\\BloodyWorkShop8\\BloodyWorkShop8\\Accounts\\Guest\\Data\\English\\SLED\\Standard2_V8MMax";
+        public string PathToDb { get; set; }
 
     }
 }

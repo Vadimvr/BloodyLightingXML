@@ -24,5 +24,10 @@ namespace mouse_lighting
         {
             InitializeComponent();
         }
+
+        private void TextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+
+        }
     }
 }

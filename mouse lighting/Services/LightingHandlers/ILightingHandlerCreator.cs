@@ -1,6 +1,7 @@
 ﻿using Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Media;
 
 namespace mouse_lighting.Services.LightingHandlers
@@ -15,7 +16,8 @@ namespace mouse_lighting.Services.LightingHandlers
         public List<FrameCycle> Worker(Lighting lighting)
         {
             List<FrameCycle> frames = new List<FrameCycle>();
-            foreach (var item in lighting.Cycles)
+            var cycles = lighting.Cycles.OrderBy(c => c.IndexNumber);
+            foreach (var item in cycles)
             {
                 FirstColorTransitionFormSecondColor(item, frames);
             }

@@ -30,8 +30,9 @@ namespace mouse_lighting.ViewModels
         private ObservableCollection<LightingCycle> _Cycles;
         public ObservableCollection<LightingCycle> Cycles { get => _Cycles; set => Set(ref _Cycles, value); }
 
-        public void UpdateCyclesView()
+        private void UpdateCyclesView()
         {
+            _DataService.DB.ChangeTracker.Clear();
             Cycles = new ObservableCollection<LightingCycle>(_DataService.DB.LightingCycles
                 .Where(x => x.LightingId == _DataTransferView.Id)
                 .OrderBy(c => c.IndexNumber));
@@ -124,7 +125,7 @@ namespace mouse_lighting.ViewModels
             {
                 List<FrameCycle> frames = LightingHandlerCreator
                     .Worker(lighting);
-                _DataService.Save(lighting, frames);
+                _DataService.SaveToXML(lighting, frames);
                 _DataTransferView.Status($"TODO export in File_{_DataTransferView.Guid}.xml");
             }
         }

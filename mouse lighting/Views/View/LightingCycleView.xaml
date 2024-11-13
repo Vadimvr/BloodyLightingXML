@@ -4,24 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:mouse_lighting.Views.View"
-             xmlns:models="clr-namespace:Models;assembly=Models"
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
              DataContext="{Binding LightingCycleViewModel, Source={StaticResource Locator}}"
              mc:Ignorable="d"
              d:DesignHeight="450"
              d:DesignWidth="800">
-    <UserControl.Resources>
-        <ObjectDataProvider x:Key="myEnumData"
-                            MethodName="GetValues"
-                            ObjectType="{x:Type models:LightingHandlersEnum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="models:LightingHandlersEnum" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-    </UserControl.Resources>
-    
     <Grid Grid.Row="1">
-    
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
             <RowDefinition Height="30"></RowDefinition>
@@ -36,12 +24,17 @@
                   SelectedIndex="{Binding IndexLightingCycle}"
                   CanUserReorderColumns="False">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Color Wheel Start">
+                <DataGridTemplateColumn Header="Color Wheel">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:ColorPicker SelectedColor="{Binding ColorWheelStart, UpdateSourceTrigger=PropertyChanged}"
                                               DisplayColorAndName="True"
                                               UsingAlphaChannel="False" />
+                            <!--<StackPanel>
+                                <xctk:ColorPicker SelectedColor="{Binding ColorWheelEnd, UpdateSourceTrigger=PropertyChanged}"
+                                                  DisplayColorAndName="True"
+                                                  UsingAlphaChannel="False" />
+                            </StackPanel>-->
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -54,12 +47,17 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTemplateColumn Header="Color Second Start">
+                <DataGridTemplateColumn Header="Color Second">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <xctk:ColorPicker SelectedColor="{Binding ColorSecondStart, UpdateSourceTrigger=PropertyChanged}"
                                               DisplayColorAndName="True"
                                               UsingAlphaChannel="False" />
+                            <!--<StackPanel>
+                                <xctk:ColorPicker SelectedColor="{Binding ColorSecondEnd, UpdateSourceTrigger=PropertyChanged}"
+                                                  DisplayColorAndName="True"
+                                                  UsingAlphaChannel="False" />
+                            </StackPanel>-->
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -77,12 +75,9 @@
                 <DataGridTextColumn Header="Display time"
                                     Binding="{Binding DisplayTime}" />
                 <DataGridTextColumn Header="Id"
-                                    Binding="{Binding Id}" />
-                <DataGridTextColumn Header="Index"
+                                    Binding="{Binding Id}" IsReadOnly="True" />
+                <DataGridTextColumn Header="Index" IsReadOnly="True"
                                     Binding="{Binding IndexNumber}" />
-                <DataGridComboBoxColumn Header="Handler"
-                                        ItemsSource="{Binding Source={StaticResource myEnumData}, Mode=OneTime}"
-                                        SelectedItemBinding="{Binding Handler}" />
                 <DataGridTemplateColumn Header="Move"
                                         Width="20">
                     <DataGridTemplateColumn.CellTemplate>
@@ -104,7 +99,6 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-
                 <DataGridTemplateColumn Header="Delete cycle"
                                         Width="80">
                     <DataGridTemplateColumn.CellTemplate>

@@ -82,7 +82,7 @@ namespace mouse_lighting.ViewModels
                 }
             }
 
-            _DataService.DB.Lighting.Add(new Models.Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
+            _DataService.DB.Lighting.Add(new Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
             _DataService.DB.SaveChanges();
             SetDataFromDb();
         }
