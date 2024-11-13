@@ -9,7 +9,10 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Infrastructure/Commands/Commands.xaml"/>
-                <ResourceDictionary Source="Resources/Base/Brushes.xaml"/>
+                <ResourceDictionary Source="Resources/Base/Brushes.xaml" />
+                <ResourceDictionary Source="Resources/ButtonStyle.xaml" />
+                <ResourceDictionary Source="Resources/ButtonInDataGridRowArrow.xaml" />
+                <ResourceDictionary Source="Resources/LightingCycleDataGrid.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <vm:ViewModelLocator x:Key="Locator"/>
