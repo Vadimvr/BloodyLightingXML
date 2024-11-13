@@ -74,10 +74,10 @@
                                     Binding="{Binding Step}" />
                 <DataGridTextColumn Header="Display time"
                                     Binding="{Binding DisplayTime}" />
-                <DataGridTextColumn Header="Id"
+                <!--<DataGridTextColumn Header="Id"
                                     Binding="{Binding Id}" IsReadOnly="True" />
                 <DataGridTextColumn Header="Index" IsReadOnly="True"
-                                    Binding="{Binding IndexNumber}" />
+                                    Binding="{Binding IndexNumber}" />-->
                 <DataGridTemplateColumn Header="Move"
                                         Width="20">
                     <DataGridTemplateColumn.CellTemplate>
