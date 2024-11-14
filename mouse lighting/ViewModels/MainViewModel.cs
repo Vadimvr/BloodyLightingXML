@@ -105,7 +105,7 @@ namespace mouse_lighting.ViewModels
                         {
                             var dir = pa.Substring(sLed.Length).Replace("\\", string.Empty);
 
-                            Lighting lighting = new Lighting() { Name = $"{locate}{dir}", Guid = Guid.Parse("00000000-0000-0000-0000-000000000000") };
+                            Lighting lighting = new Lighting() { Name = $"{locate} {dir}", Guid = Guid.Parse("00000000-0000-0000-0000-000000000000") };
                             _DataService.SaveToXML(lighting, new System.Collections.Generic.List<FrameCycle>(),pa);
                         }
                     }
