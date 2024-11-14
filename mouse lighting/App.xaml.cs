@@ -40,6 +40,7 @@ namespace mouse_lighting
             var host = Host;
             base.OnStartup(e);
             await host.StartAsync();
+
         }
 
         protected override async void OnExit(ExitEventArgs e)
@@ -48,5 +49,6 @@ namespace mouse_lighting
             using var host = Host;
             await host.StopAsync();
         }
+
     }
 }

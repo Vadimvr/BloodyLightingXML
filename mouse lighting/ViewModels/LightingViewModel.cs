@@ -48,6 +48,7 @@ namespace mouse_lighting.ViewModels
         private Lighting _SelectedLighting;
         public Lighting SelectedLighting
         {
+            //TODO ошибка когда добавилась новая запись.
             get { return _SelectedLighting; }
             set
             {
@@ -81,8 +82,9 @@ namespace mouse_lighting.ViewModels
                     newName = $"{defNewName}_{j}";
                 }
             }
-
-            _DataService.DB.Lighting.Add(new Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
+            var lighting = new Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName };
+            SelectedLighting = lighting;
+            _DataService.DB.Lighting.Add(lighting);
             _DataService.DB.SaveChanges();
             SetDataFromDb();
         }

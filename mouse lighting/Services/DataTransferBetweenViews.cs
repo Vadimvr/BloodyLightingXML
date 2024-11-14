@@ -21,9 +21,18 @@ namespace mouse_lighting.Services
         }
         public void SetLighting(Lighting lighting)
         {
-            Name = lighting.Name;
-            Guid = lighting.Guid;
-            Id = lighting.Id;
+            if (lighting != null)
+            {
+                Name = lighting.Name;
+                Guid = lighting.Guid;
+                Id = lighting.Id;
+            }
+            else
+            {
+                Name = null;
+                Guid = Guid.Empty;
+                Id = -1;
+            }
             UpdateSelectedLighting?.Invoke();
         }
     }

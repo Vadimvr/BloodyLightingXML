@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace mouse_lighting.Services
 {
@@ -22,9 +23,12 @@ namespace mouse_lighting.Services
         static string path = string.Empty;
         private ILocalData _localData;
         public Setting Setting { get; set; }
+        private Action<string> Status;
 
-        public DataService(ILocalData localData)
+
+        public DataService(ILocalData localData,IDataTransferBetweenViews dataTransfer)
         {
+            Status = dataTransfer.Status;
             _localData = localData;
             Setting = _localData.LoadSetting();
             if (Setting == null)
@@ -46,11 +50,15 @@ namespace mouse_lighting.Services
                 _localData.SaveSetting(Setting);
             }
         }
+        public void SaveToXML(Lighting lighting, List<FrameCycle> frames, string path)
+        {
+            Save(lighting, frames, path);
+        }
         public void SaveToXML(Lighting lighting, List<FrameCycle> frames)
         {
-            DataService.Save(lighting, frames);
+            Save(lighting, frames, Setting.PathToXML);
         }
-        private static void Save(Lighting lighting, List<FrameCycle> frames)
+        private void Save(Lighting lighting, List<FrameCycle> frames,string path = null)
         {
             var fileName = $"File_{lighting.Guid.ToString().ToUpper()}";
             XDocument doc =
@@ -72,11 +80,11 @@ namespace mouse_lighting.Services
                             )
             )
             );
-            SaveInFile(path_1, fileName, doc);
             SaveInFile(path, fileName, doc);
+
         }
 
-        private static void SaveInFile(string path, string fileName, XDocument doc)
+        private  void SaveInFile(string path, string fileName, XDocument doc)
         {
             if (Path.Exists(path))
             {
@@ -84,6 +92,11 @@ namespace mouse_lighting.Services
                 {
                     doc.Save(sw);
                 }
+                Status($"Export {path}\\{fileName}.xml");
+            }
+            else
+            {
+                SaveInFile(path_1, fileName, doc);
             }
         }
     }

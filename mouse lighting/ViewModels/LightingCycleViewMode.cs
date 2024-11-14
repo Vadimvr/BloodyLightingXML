@@ -12,6 +12,7 @@ namespace mouse_lighting.ViewModels
 {
     internal class LightingCycleViewMode : ViewModel
     {
+        //TODO: create style from color Picker
         private IDataTransferBetweenViews _DataTransferView;
         private IUserDialog _UserDialog;
         private IDataService _DataService;
@@ -32,10 +33,18 @@ namespace mouse_lighting.ViewModels
 
         private void UpdateCyclesView()
         {
+
             _DataService.DB.ChangeTracker.Clear();
-            Cycles = new ObservableCollection<LightingCycle>(_DataService.DB.LightingCycles
-                .Where(x => x.LightingId == _DataTransferView.Id)
-                .OrderBy(c => c.IndexNumber));
+            if (_DataTransferView.Id > 0)
+            {
+                Cycles = new ObservableCollection<LightingCycle>(_DataService.DB.LightingCycles
+                    .Where(x => x.LightingId == _DataTransferView.Id)
+                    .OrderBy(c => c.IndexNumber));
+            }
+            else
+            {
+                Cycles.Clear();
+            }
         }
 
         private int _IndexLightingCycle;
@@ -55,7 +64,7 @@ namespace mouse_lighting.ViewModels
         private LambdaCommand _AddNewCycleCommand;
         public ICommand AddNewCycleCommand => _AddNewCycleCommand ??=
             new LambdaCommand(OnAddNewCycleCommandExecuted, CanAddNewCycleCommandExecute);
-        private bool CanAddNewCycleCommandExecute(object p) => Cycles != null;
+        private bool CanAddNewCycleCommandExecute(object p) => _DataTransferView.Id > 0;
         private void OnAddNewCycleCommandExecuted(object p)
         {
             var Lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == _DataTransferView.Id);
@@ -126,7 +135,7 @@ namespace mouse_lighting.ViewModels
                 List<FrameCycle> frames = LightingHandlerCreator
                     .Worker(lighting);
                 _DataService.SaveToXML(lighting, frames);
-                _DataTransferView.Status($"TODO export in File_{_DataTransferView.Guid}.xml");
+
             }
         }
         #endregion

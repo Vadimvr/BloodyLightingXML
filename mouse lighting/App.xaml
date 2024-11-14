@@ -3,16 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:mouse_lighting"
              StartupUri="Views/Windows/MainWindow.xaml"
-             xmlns:vm="clr-namespace:mouse_lighting.ViewModels"
-             >
+             xmlns:vm="clr-namespace:mouse_lighting.ViewModels">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Infrastructure/Commands/Commands.xaml"/>
-                <ResourceDictionary Source="Resources/Base/Brushes.xaml"/>
+                <ResourceDictionary Source="Resources/ThemeStyle.xaml" />
+                <ResourceDictionary Source="Infrastructure/Commands/Commands.xaml" />
+                <ResourceDictionary Source="Resources/Base/Brushes.xaml" />
+                <ResourceDictionary Source="Resources/ButtonStyle.xaml" />
+                <ResourceDictionary Source="Resources/ButtonInDataGridRowArrow.xaml" />
+                <ResourceDictionary Source="Resources/LightingCycleDataGrid.xaml" />
+                <ResourceDictionary Source="Resources/CaptionButtonStyle.xaml" />
+
             </ResourceDictionary.MergedDictionaries>
 
-            <vm:ViewModelLocator x:Key="Locator"/>
+
+            <vm:ViewModelLocator x:Key="Locator" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>
