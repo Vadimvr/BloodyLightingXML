@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:mouse_lighting.Views.View"
              xmlns:xctk="clr-namespace:Xceed.Wpf.Toolkit;assembly=Xceed.Wpf.Toolkit"
+             xmlns:viewmodels="clr-namespace:mouse_lighting.ViewModels"
+             d:DataContext="{d:DesignInstance Type=viewmodels:LightingCycleViewMode}"
              DataContext="{Binding LightingCycleViewModel, Source={StaticResource Locator}}"
              mc:Ignorable="d"
              d:DesignHeight="450"
@@ -16,7 +18,7 @@
         </Grid.RowDefinitions>
         <Grid>
             <DataGrid ItemsSource="{ Binding Path=Cycles}"
-                      Style="{DynamicResource LightingCycleViewDataGrid}"
+                      Style="{StaticResource LightingCycleViewDataGrid}"
                       SelectedIndex="{Binding IndexLightingCycle}" >
                 <DataGrid.Columns>
                     <DataGridTemplateColumn Header="Color Wheel">
@@ -48,7 +50,8 @@
                     </DataGridTemplateColumn>
                     <DataGridTemplateColumn Header="Color Second End">
                         <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="Color">
+                                
                                 <xctk:ColorPicker SelectedColor="{Binding ColorSecondEnd, UpdateSourceTrigger=PropertyChanged}"
                                                   DisplayColorAndName="True"
                                                   UsingAlphaChannel="False" />

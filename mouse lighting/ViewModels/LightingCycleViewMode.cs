@@ -12,6 +12,7 @@ namespace mouse_lighting.ViewModels
 {
     internal class LightingCycleViewMode : ViewModel
     {
+        //TODO: create style from color Picker
         private IDataTransferBetweenViews _DataTransferView;
         private IUserDialog _UserDialog;
         private IDataService _DataService;
