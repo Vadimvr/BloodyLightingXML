@@ -13,7 +13,8 @@ namespace mouse_lighting
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        // Window Theme 
+        //https://gist.github.com/fabric-io-rodrigues/4cd83f1aeb41dc8f60fe9535184cbe10
         #region ResizeWindows
         bool ResizeInProcess = false;
         private void Resize_Init(object sender, MouseButtonEventArgs e)
@@ -28,6 +29,7 @@ namespace mouse_lighting
 
         private void Resize_End(object sender, MouseButtonEventArgs e)
         {
+            if (e.LeftButton == MouseButtonState.Pressed) return;
             Rectangle senderRect = sender as Rectangle;
             if (senderRect != null)
             {

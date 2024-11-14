@@ -14,14 +14,14 @@
     <Grid Grid.Row="1">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="30"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid>
             <DataGrid ItemsSource="{ Binding Path=Cycles}"
                       Style="{StaticResource LightingCycleViewDataGrid}"
                       SelectedIndex="{Binding IndexLightingCycle}" >
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Color Wheel">
+                    <DataGridTemplateColumn Header="Color Wheel Start">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <xctk:ColorPicker SelectedColor="{Binding ColorWheelStart, UpdateSourceTrigger=PropertyChanged}"
@@ -39,7 +39,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Color Second">
+                    <DataGridTemplateColumn Header="Color Second Start">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <xctk:ColorPicker SelectedColor="{Binding ColorSecondStart, UpdateSourceTrigger=PropertyChanged}"

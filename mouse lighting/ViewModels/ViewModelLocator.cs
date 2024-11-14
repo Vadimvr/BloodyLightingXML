@@ -7,6 +7,7 @@ namespace mouse_lighting.ViewModels
         public MainWindowViewModel MainWindowModel => App.Services.GetRequiredService<MainWindowViewModel>();
         public LightingViewModel LightingViewModel => App.Services.GetRequiredService<LightingViewModel>(); 
         public LightingCycleViewMode LightingCycleViewModel => App.Services.GetRequiredService<LightingCycleViewMode>();
+        public MainViewModel MainViewModel => App.Services.GetRequiredService<MainViewModel>();
     }
     internal static class ViewModelRegistrator
     {
@@ -14,6 +15,7 @@ namespace mouse_lighting.ViewModels
            .AddSingleton<MainWindowViewModel>()
            .AddSingleton<LightingViewModel>()
            .AddSingleton<LightingCycleViewMode>()
+           .AddSingleton<MainViewModel>()
         ;
     }
 }

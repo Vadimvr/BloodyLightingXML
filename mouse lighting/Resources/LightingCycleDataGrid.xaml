@@ -26,6 +26,7 @@
                 Value="Column" />
         <Setter Property="Margin"
                 Value="5,0,0,0" />
+     
         <Style.Resources>
             <Style TargetType="DataGridCell">
                 <Style.Triggers>
@@ -40,8 +41,6 @@
             </Style>
             <Style TargetType="DataGridRow"
                    BasedOn="{StaticResource baseStyle}">
-                <Setter Property="BorderBrush"
-                        Value="{StaticResource DarkBorder}" />
                 <Setter Property="Background"
                         Value="{StaticResource DarkBackground}" />
                 <Setter Property="Foreground"
@@ -62,6 +61,8 @@
                         Value="{StaticResource DarkDataGridHeadler}" />
                 <Setter Property="Foreground"
                         Value="{StaticResource DarkFont}" />
+                <Setter Property="BorderThickness"
+                        Value="2" />
             </Style>
         </Style.Resources>
     </Style>

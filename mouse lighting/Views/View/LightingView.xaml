@@ -22,7 +22,7 @@
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"></RowDefinition>
-                    <RowDefinition Height="30"></RowDefinition>
+                    <RowDefinition Height="Auto"></RowDefinition>
                 </Grid.RowDefinitions>
                 <DataGrid ItemsSource="{ Binding Lighting}"
                           AutoGenerateColumns="False"

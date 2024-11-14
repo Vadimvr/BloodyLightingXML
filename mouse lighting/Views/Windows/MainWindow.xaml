@@ -11,13 +11,10 @@
         Title="{Binding Title}"
         xmlns:view="clr-namespace:mouse_lighting.Views.View"
         xmlns:viewmodels="clr-namespace:mouse_lighting.ViewModels"
-        d:DataContext="{d:DesignInstance Type=viewmodels:MainWindowViewModel}"
         Width="800"
         Height="450"
         WindowStyle="None"
-        ResizeMode="CanMinimize"
-        Style="{StaticResource WindowsDarkStyle}">
-    <!--https://gist.github.com/fabric-io-rodrigues/4cd83f1aeb41dc8f60fe9535184cbe10-->
+        ResizeMode="CanMinimize">
     <Window.Resources>
         <Style x:Key="RectBorderStyle"
                TargetType="Rectangle">
@@ -39,19 +36,20 @@
         <Grid MouseDown="StackPanel_MouseDown"
               VerticalAlignment="Top"
               Margin="0"
-              Background="#290404">
+              Background="{StaticResource WindowBackgroundColor}">
             <!--Background="{StaticResource DarkBackground}">-->
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Image x:Name="HeaderIcon"
+            
+            <!--<Image x:Name="HeaderIcon"
                    Grid.Column="0"
                    Width="20"
                    Height="20"
                    Margin="2"
-                   HorizontalAlignment="Left" />
+                   HorizontalAlignment="Left" />-->
             <Label x:Name="HeaderTitle"
                    Grid.Column="1"
                    Margin="0"
@@ -82,78 +80,7 @@
                VerticalAlignment="Stretch"
                HorizontalAlignment="Stretch"
                Background="{StaticResource DarkBackground}">
-            <DockPanel>
-                <Menu DockPanel.Dock="Top"
-                      IsMainMenu="True">
-                    <Menu.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <DockPanel LastChildFill="False" />
-                        </ItemsPanelTemplate>
-                    </Menu.ItemsPanel>
-                    <MenuItem Header="File">
-                        <MenuItem Header="Exit"
-                                  Command="{StaticResource CloseWindowCommand}" />
-                    </MenuItem>
-                </Menu>
-                <StatusBar DockPanel.Dock="Bottom">
-                    <StatusBarItem DockPanel.Dock="Right">
-                        <ResizeGrip />
-                    </StatusBarItem>
-                    <StatusBarItem Content="{Binding Status}" />
-                </StatusBar>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="150"></ColumnDefinition>
-                        <ColumnDefinition></ColumnDefinition>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
-                    </Grid.RowDefinitions>
-
-                    <StackPanel Grid.Column="0"
-                                Grid.Row="0"
-                                Grid.ColumnSpan="2">
-                        <Grid HorizontalAlignment="Left">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="100"></ColumnDefinition>
-                                <ColumnDefinition Width="*"></ColumnDefinition>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition></RowDefinition>
-                                <RowDefinition></RowDefinition>
-                            </Grid.RowDefinitions>
-
-                            <Label Grid.Column="0"
-                                   Grid.Row="0"
-                                   Content="Path to XML" />
-                            <Label Grid.Column="0"
-                                   Grid.Row="1"
-                                   Content="Path to DB" />
-                            <DockPanel Grid.Column="1"
-                                       Grid.Row="0">
-                                <TextBox Text="{Binding PathToXML}">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Command="{Binding UpdateSettingCommand}"
-                                                    Key="Enter" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
-                            </DockPanel>
-                            <DockPanel Grid.Column="1"
-                                       Grid.Row="1">
-                                <TextBox Text="{Binding PathToDb}">
-                                    <TextBox.InputBindings>
-                                        <KeyBinding Command="{Binding UpdateSettingCommand}"
-                                                    Key="Enter" />
-                                    </TextBox.InputBindings>
-                                </TextBox>
-                            </DockPanel>
-                        </Grid>
-                    </StackPanel>
-                    <view:LightingView  Grid.Row="1"
-                                        Grid.ColumnSpan="2" />
-                </Grid>
-            </DockPanel>
+            <view:MainView />
         </Grid>
         <Rectangle x:Name="leftSizeGrip"
                    Width="7"
