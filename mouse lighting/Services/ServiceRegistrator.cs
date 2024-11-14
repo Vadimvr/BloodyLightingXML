@@ -8,7 +8,7 @@ namespace mouse_lighting.Services
         public static IServiceCollection AddServices(this IServiceCollection services) => services
            .AddSingleton<ILocalData, LocalData>()
            .AddSingleton<IDataTransferBetweenViews, DataTransferBetweenViews>()
-           .AddTransient<IDataService, DataService>()
+           .AddSingleton<IDataService, DataService>()
            .AddTransient<IUserDialog, UserDialog>();
     }
 }

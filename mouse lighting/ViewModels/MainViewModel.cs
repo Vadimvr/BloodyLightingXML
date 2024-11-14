@@ -1,6 +1,10 @@
-﻿using mouse_lighting.Infrastructure.Commands;
+﻿using Models;
+using mouse_lighting.Infrastructure.Commands;
 using mouse_lighting.Services.Interfaces;
 using mouse_lighting.ViewModels.Base;
+using System;
+using System.IO;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace mouse_lighting.ViewModels
@@ -25,20 +29,28 @@ namespace mouse_lighting.ViewModels
         private string _PathToDb;
         public string PathToDb
         {
-            get
-            {
-                return _PathToDb;
-            }
-
+            get { return _PathToDb; }
             set
             {
-                Set(ref _PathToDb, value);
+                if (Set(ref _PathToDb, value))
+                {
+                    _DataService.Setting.PathToDb = _PathToDb;
+                }
             }
         }
 
 
         private string _PathToXML;
-        public string PathToXML { get => _PathToXML; set => Set(ref _PathToXML, value); }
+        public string PathToXML
+        {
+            get => _PathToXML; set
+            {
+                if (Set(ref _PathToXML, value))
+                {
+                    _DataService.Setting.PathToXML = _PathToXML;
+                }
+            }
+        }
 
 
         public MainViewModel(IUserDialog UserDialog, IDataService DataService, IDataTransferBetweenViews DataTransfer)
@@ -67,6 +79,39 @@ namespace mouse_lighting.ViewModels
             _DataService.Setting.PathToXML = PathToXML;
             _DataService.Setting.PathToDb = PathToDb;
             _DataService.SaveSetting();
+        }
+        #endregion
+
+
+        #region AddXmlInAllFoldersCommand - описание команды 
+        private LambdaCommand _AddXmlInAllFoldersCommand;
+        public ICommand AddXmlInAllFoldersCommand => _AddXmlInAllFoldersCommand ??=
+            new LambdaCommand(OnAddXmlInAllFoldersCommandExecuted, CanAddXmlInAllFoldersCommandExecute);
+        private bool CanAddXmlInAllFoldersCommandExecute(object p) => true;
+        private void OnAddXmlInAllFoldersCommandExecuted(object p)
+        {
+            string pathAccount = "C:\\Program Files (x86)\\BloodyWorkShop8\\BloodyWorkShop8\\Accounts\\Guest\\Data";
+            if (Path.Exists(pathAccount))
+            {
+                var directories = Directory.GetDirectories(pathAccount);
+                foreach (var item in directories)
+                {
+                    var locate = item.Substring(pathAccount.Length).Replace("\\",string.Empty);
+                    var sLed = $"{item}\\SLED";
+                    if (Path.Exists(sLed))
+                    {
+                        var sLedDirectories = Directory.GetDirectories(sLed);
+                        foreach (var pa in sLedDirectories)
+                        {
+                            var dir = pa.Substring(sLed.Length).Replace("\\", string.Empty);
+
+                            Lighting lighting = new Lighting() { Name = $"{locate}{dir}", Guid = Guid.Parse("00000000-0000-0000-0000-000000000000") };
+                            _DataService.SaveToXML(lighting, new System.Collections.Generic.List<FrameCycle>(),pa);
+                        }
+                    }
+                }
+
+            }
         }
         #endregion
 
