@@ -3,28 +3,85 @@
 	<PropertyGroup>
 		<OutputType>WinExe</OutputType>
 		<TargetFramework>net8.0-windows</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
 		<UseWPF>true</UseWPF>
-		<UseWindowsForms>true</UseWindowsForms>
+		<ApplicationIcon>Styles\Icons\Icon.ico</ApplicationIcon>
+		<StartupObject>mouse_lighting.Program</StartupObject>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Styles\Icons\Icon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Resource Include="Styles\Icons\Icon.ico">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.1" />
-		<PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="PixiEditor.ColorPicker" Version="3.4.1" />
-		<PackageReference Include="System.Interactive.Async" Version="6.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+		
+		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Models\Models.csproj" />
 	</ItemGroup>
+</Project>
+
+
+
+
+<!--<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net8.0-windows</TargetFramework>
+		<UseWPF>true</UseWPF>
+		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<StartupObject>mouse_lighting.Program</StartupObject>
+	</PropertyGroup>
 
 	<ItemGroup>
-		<Page Update="Infrastructure\Commands\Commands.xaml">
-			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
-			<SubType>Designer</SubType>
-		</Page>
+	  <Page Remove="App.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Include="Styles\Icons\Icon.ico">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		--><!--<PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.1" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+		<PackageReference Include="PixiEditor.ColorPicker" Version="3.4.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="9.0.0" />
+		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
+		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />--><!--
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Models\Models.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Resource Include="Styles\Icons\Icon.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Page Update="Resources\Base\Brushes.xaml">
 			<XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
 			<SubType>Designer</SubType>
@@ -37,4 +94,4 @@
 		</None>
 	</ItemGroup>
 
-</Project>
+</Project>-->

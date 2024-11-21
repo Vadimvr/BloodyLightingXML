@@ -1,0 +1,10 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:l="clr-namespace:mouse_lighting.Commands.CommandsWindow">
+
+    <l:CloseWindow x:Key="CloseWindowCommand" />
+    <l:StateNormalMaximizedWindow x:Key="StateNormalMaximizedWindowCommand" />
+    <l:StateMinimizedWindow x:Key="StateMinimizedWindowCommand" />
+    <l:MoveWindowCommand x:Key="MyMoveWindowCommand" />
+    <l:SnowSystemMiniMenu x:Key="SnowSystemMiniMenuCommand" />
+</ResourceDictionary>

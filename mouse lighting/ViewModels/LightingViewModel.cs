@@ -1,17 +1,16 @@
-﻿using mouse_lighting.Infrastructure.Commands;
-using mouse_lighting.ViewModels.Base;
+﻿using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System;
 using mouse_lighting.Services.Interfaces;
 using System.Windows.Media;
-using System.Linq;
-using System.Collections.Generic;
 using Models;
+using mouse_lighting.Services.UserDialog;
+using mouse_lighting.Services.DataService;
+using mouse_lighting.Commands.Base;
 
 namespace mouse_lighting.ViewModels
 {
-    internal class LightingViewModel : ViewModel
+    internal class LightingViewModel : ViewModelBase
     {
         private IDataTransferBetweenViews _DataTransferView;
         private IUserDialog _UserDialog;

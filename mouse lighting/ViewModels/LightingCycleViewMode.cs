@@ -1,16 +1,16 @@
-﻿using mouse_lighting.Infrastructure.Commands;
-using mouse_lighting.Services.Interfaces;
+﻿using mouse_lighting.Services.Interfaces;
 using mouse_lighting.ViewModels.Base;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
-using System.Linq;
 using mouse_lighting.Services.LightingHandlers;
-using System.Collections.Generic;
 using Models;
+using mouse_lighting.Services.UserDialog;
+using mouse_lighting.Services.DataService;
+using mouse_lighting.Commands.Base;
 
 namespace mouse_lighting.ViewModels
 {
-    internal class LightingCycleViewMode : ViewModel
+    internal class LightingCycleViewMode : ViewModelBase
     {
         //TODO: create style from color Picker
         private IDataTransferBetweenViews _DataTransferView;

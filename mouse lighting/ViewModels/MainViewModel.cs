@@ -1,6 +1,9 @@
 ﻿using Models;
-using mouse_lighting.Infrastructure.Commands;
+using mouse_lighting.Commands;
+using mouse_lighting.Commands.Base;
+using mouse_lighting.Services.DataService;
 using mouse_lighting.Services.Interfaces;
+using mouse_lighting.Services.UserDialog;
 using mouse_lighting.ViewModels.Base;
 using System;
 using System.IO;
@@ -9,7 +12,7 @@ using System.Windows.Input;
 
 namespace mouse_lighting.ViewModels
 {
-    internal class MainViewModel : ViewModel
+    internal class MainViewModel : ViewModelBase
     {
         private IDataTransferBetweenViews _DataTransfer;
         private readonly IUserDialog _UserDialog;
