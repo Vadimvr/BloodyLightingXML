@@ -14,7 +14,7 @@
                 <ColumnDefinition Width="4"></ColumnDefinition>
                 <ColumnDefinition MinWidth="150"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <l:LightingView_1 Grid.Column="0" Grid.RowSpan="2" />
+            <l:LightingView Grid.Column="0" Grid.RowSpan="2" />
             <GridSplitter Grid.Column="1" Width="4" Background="Red" HorizontalAlignment="Center" VerticalAlignment="Stretch" />
             <l:CyclesView Grid.Column="2" Grid.RowSpan="2"/>
         </Grid>

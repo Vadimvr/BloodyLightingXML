@@ -18,9 +18,9 @@ namespace mouse_lighting.Views.View
     /// <summary>
     /// Логика взаимодействия для LightingView_1.xaml
     /// </summary>
-    public partial class LightingView_1 : UserControl
+    public partial class LightingView : UserControl
     {
-        public LightingView_1()
+        public LightingView()
         {
             InitializeComponent();
         }
