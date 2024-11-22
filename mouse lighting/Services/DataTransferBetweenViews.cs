@@ -10,9 +10,10 @@ namespace mouse_lighting.Services
         public int Id { get; private set; }
 
 
-        public event Action UpdateSelectedLighting;
+        public event Action? UpdateSelectedLighting;
 
-        public event Action<string> PrintInStatusEvent;
+        public event Action<string>? PrintInStatusEvent;
+        public event Action<int>? UpdateSelectedLightingEvent;
 
         public void Status(string message)
         {
@@ -33,6 +34,12 @@ namespace mouse_lighting.Services
                 Id = -1;
             }
             UpdateSelectedLighting?.Invoke();
+        }
+
+        public void Update(int id)
+        {
+            Id = id;
+            UpdateSelectedLightingEvent?.Invoke(id);
         }
     }
 }

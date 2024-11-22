@@ -10,6 +10,7 @@ namespace mouse_lighting.ViewModels
         private readonly IUserDialog _UserDialog;
         private readonly IDataService _DataService;
         private readonly IObserverStatusBar _ObserverStatusBar;
+        
         private string _Title = "Lighting for the bloody mouse";
         public string Title { get => _Title; set => Set(ref _Title, value); }
 
@@ -17,9 +18,9 @@ namespace mouse_lighting.ViewModels
         private string status = "Готово";
         public string Status { get => status; set => Set(ref status, value); }
 
-
         private string _StatusBarForegroundColor = "#000000";
         public string StatusBarForegroundColor { get => _StatusBarForegroundColor; set => Set(ref _StatusBarForegroundColor, value); }
+
         private void UpdateStatusBar(string message, System.Drawing.Color color)
         {
             if (!string.IsNullOrEmpty(message))
@@ -34,7 +35,6 @@ namespace mouse_lighting.ViewModels
         {
             _UserDialog = userDialog;
             _DataService = dataService;
-            ((ObserverStatusBar)ObserverStatusBar).UpdateStatusBarEvent(UpdateStatusBar);
             _ObserverStatusBar = ObserverStatusBar;
         }
     }

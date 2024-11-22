@@ -11,5 +11,8 @@ namespace mouse_lighting.Services.Interfaces
         event Action<string> PrintInStatusEvent;
         void SetLighting(Lighting lighting);
         public void Status(string message);
+
+        void Update(int id);
+        event Action<int> UpdateSelectedLightingEvent;
     }
 }

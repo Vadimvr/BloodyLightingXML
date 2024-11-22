@@ -4,27 +4,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" Height="450" Width="800"
         xmlns:view="clr-namespace:mouse_lighting.Views.View" xmlns:l="clr-namespace:mouse_lighting.Views.Windows"
         Style="{StaticResource MainWindowStyle}" DataContext="{Binding MainWindowViewModel, Source={StaticResource Locator}}"
-        Icon="..\..\Styles\Icons\Icon.ico"  Title="{Binding Title}">
-    
-        <!--<Menu DockPanel.Dock="Top" IsMainMenu="True">
-            <Menu.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <DockPanel LastChildFill="False" />
-                </ItemsPanelTemplate>
-            </Menu.ItemsPanel>
-            <MenuItem Header="Файл">
-                <MenuItem Header="Выход" Command="{StaticResource CloseWindowMenuItemCommand}"
-                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" />
-            </MenuItem>
-        </Menu>
-        <StatusBar DockPanel.Dock="Bottom" Margin="5">
-            <StatusBarItem DockPanel.Dock="Right">
-                <ResizeGrip />
-            </StatusBarItem>
-            <StatusBarItem Content="{Binding Status}" Foreground="{Binding StatusBarForegroundColor}" />
-        </StatusBar>-->
-        <Grid>
-            <view:MainView />
-            <l:TaskBarWindow />
-        </Grid>
+        Icon="..\..\Styles\Icons\Icon.ico" Title="{Binding Title}">
+    <Grid>
+        <DockPanel Style="{StaticResource MainView_DockPanel}">
+            <view:MenuView DockPanel.Dock="Top" />
+            <view:StatusBarView DockPanel.Dock="Bottom" />
+            <view:ContentView />
+        </DockPanel>
+        <l:TaskBarWindow />
+    </Grid>
 </Window>

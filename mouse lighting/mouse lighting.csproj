@@ -11,7 +11,14 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Remove="Monikers.imagemanifest" />
 		<None Remove="Styles\Icons\Icon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <content Include="Monikers.imagemanifest">
+	    <IncludeInVSIX>true</IncludeInVSIX>
+	  </content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -28,10 +35,6 @@
 		
 		<PackageReference Include="Hardcodet.NotifyIcon.Wpf" Version="2.0.1" />
 		<PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.0" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="Models\" />
 	</ItemGroup>
 
 	<ItemGroup>

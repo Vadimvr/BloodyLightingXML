@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace mouse_lighting.Views.View
 {
     /// <summary>
-    /// Логика взаимодействия для MainView.xaml
+    /// Логика взаимодействия для CyclesView.xaml
     /// </summary>
-    public partial class MainView : UserControl
+    public partial class CyclesView : UserControl
     {
-        public MainView()
+        public CyclesView()
         {
             InitializeComponent();
         }

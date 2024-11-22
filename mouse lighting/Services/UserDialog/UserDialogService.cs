@@ -46,7 +46,7 @@ namespace mouse_lighting.Services.UserDialog
             else { return null; }
         }
 
-        public void ShowNotification(string message, TypeNotification typeNotification, string? title = null)
+        public void ShowNotification(string message, TypeNotification typeNotification = TypeNotification.Notification, string? title = null)
         {
             title = title ?? Title;
             MessageBoxImage icon;
@@ -67,6 +67,18 @@ namespace mouse_lighting.Services.UserDialog
             MessageBoxButton button = MessageBoxButton.OK;
             MessageBoxResult result;
             result = System.Windows.MessageBox.Show(message, title, button, icon, MessageBoxResult.Yes);
+        }
+
+        public string? OpenFolder(string? path = null)
+        {
+            var dlg = new FolderPicker();
+            dlg.InputPath = @"c:\windows\system32";
+            if (dlg.ShowDialog() == true)
+            {
+                ShowNotification(dlg.ResultPath);
+                return dlg.ResultPath;
+            }
+            return null;
         }
     }
 }

@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace mouse_lighting.Views.View
 {
     /// <summary>
-    /// Логика взаимодействия для LightingView.xaml
+    /// Логика взаимодействия для PathView.xaml
     /// </summary>
-    public partial class LightingView : UserControl
+    public partial class PathView : UserControl
     {
-        public LightingView()
+        public PathView()
         {
             InitializeComponent();
         }

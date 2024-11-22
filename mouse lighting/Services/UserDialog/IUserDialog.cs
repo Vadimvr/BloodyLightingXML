@@ -23,6 +23,7 @@
 
         public string? Save(string? path = null, string? filter = null, int filterIndex = 1);
         public string? Open(string? path = null, string? filter = null, int filterIndex = 1);
+        public string? OpenFolder(string? path = null);
         public IEnumerable<string> OpenMany(string? path = null, string? filter = null, int filterIndex = 1);
 
     }
