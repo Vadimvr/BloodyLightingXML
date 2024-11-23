@@ -47,8 +47,8 @@
                     </DataGridTemplateColumn>
                     <DataGridTextColumn Header="Step" Binding="{Binding Step}" Width="40" />
                     <DataGridTextColumn Header="Time" Width="40" Binding="{Binding DisplayTime}" />
-                    <DataGridTextColumn Header="Id" Width="40" Binding="{Binding Id}" />
-                    <DataGridTextColumn Header="Index" Width="40" Binding="{Binding IndexNumber}" />
+                    <!--<DataGridTextColumn Header="Id" Width="40" Binding="{Binding Id}" />
+                    <DataGridTextColumn Header="Index" Width="40" Binding="{Binding IndexNumber}" />-->
                     <DataGridTemplateColumn Header="" Width="30">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
