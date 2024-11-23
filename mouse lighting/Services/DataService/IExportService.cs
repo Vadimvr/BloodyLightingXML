@@ -49,33 +49,23 @@ namespace mouse_lighting.Services.DataService
 
             return doc;
         }
-        private void SaveInFile(string path, string fileName, XDocument doc)
-        {
-            if (Path.Exists(path))
-            {
-                using (StreamWriter sw = new StreamWriter($"{path}\\{fileName}.xml", false, Encoding.Unicode))
-                {
-                    doc.Save(sw);
-                }
-                _StatusBar.StatusBar($"Export {path}\\{fileName}.xml");
-            }
-            else
-            {
-                SaveInFile(Environment.GetFolderPath(Environment.SpecialFolder.Desktop), fileName, doc);
-                _StatusBar.StatusBar($"Export   \\{fileName}.xml");
 
-            }
-        }
         public void ExportXml(Lighting lighting, string path)
         {
             if (lighting == null || lighting.Cycles == null || lighting.Guid == default! || string.IsNullOrEmpty(lighting.Name))
             { throw new ArgumentException(nameof(lighting)); }
-            if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) { throw new ArgumentException($"{nameof(path)} does not exist"); }
+            if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) { _UserDialog.ShowNotification($"Path not found\n path:'{path}'"); return; }
 
             var res = _Creator.Worker(lighting);
             if (res.Count == 0) { _UserDialog.ShowNotification("List is empty"); return; }
             var doc = ConvertInXmlFile(lighting, res);
-            if (doc != null) { doc.Save(path); }
+            var fileName = $"File_{lighting.Guid.ToString().ToUpper()}";
+
+            using (StreamWriter sw = new StreamWriter($"{path}\\{fileName}.xml", false, Encoding.Unicode))
+            {
+                doc.Save(sw);
+            }
+            _StatusBar.StatusBar($"Export {path}\\{fileName}.xml");
         }
     }
 }

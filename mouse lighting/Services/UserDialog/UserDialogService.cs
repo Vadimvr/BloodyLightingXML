@@ -75,7 +75,6 @@ namespace mouse_lighting.Services.UserDialog
             dlg.InputPath = @"c:\windows\system32";
             if (dlg.ShowDialog() == true)
             {
-                ShowNotification(dlg.ResultPath);
                 return dlg.ResultPath;
             }
             return null;
