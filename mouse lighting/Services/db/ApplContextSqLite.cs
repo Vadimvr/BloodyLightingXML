@@ -51,7 +51,6 @@ namespace mouse_lighting.Services.db
     {
         public List<Lighting> Lighting { get; }
         public void Update();
-
         public void Save();
     }
 }

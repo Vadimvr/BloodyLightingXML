@@ -19,6 +19,9 @@ namespace mouse_lighting.Services
 
             services.AddSingleton<Setting>();
             services.AddSingleton<PathsModel>();
+            services.AddSingleton<LightingModel>();
+            services.AddSingleton<StatusBarModel>();
+            services.AddSingleton<FindFolder>();
 
             services.AddTransient<IDataService, DataService.DataService>();
             services.AddTransient<IUserDialog, UserDialogService>();
@@ -30,7 +33,7 @@ namespace mouse_lighting.Services
             services.AddSingleton<ICyclesModels, CyclesModels>();
 
 
-            var type = Configuration["TypeDB"];
+            string? type = Configuration["TypeDB"] ?? string.Empty;
             var connectionString = Configuration[$"DataBase:ConnectionStrings:{type}"];
             Debug.WriteLine(type);
             Debug.WriteLine(connectionString);
@@ -43,7 +46,7 @@ namespace mouse_lighting.Services
                     default: throw new InvalidOperationException($"{type} not implement");
 
                     case "SQLite":
-                      // opt.UseSqlite(Configuration.GetConnectionString(type));
+                        // opt.UseSqlite(Configuration.GetConnectionString(type));
                         break;
                 }
 

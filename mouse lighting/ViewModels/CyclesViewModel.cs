@@ -14,8 +14,6 @@ namespace mouse_lighting.ViewModels
     {
         //TODO: create style from color Picker
         private readonly IDataTransferBetweenViews _DataTransferView;
-        private readonly IUserDialog _UserDialog;
-        private readonly IDataService _DataService;
         private readonly ICyclesModels _CyclesModels;
 
         private ObservableCollection<LightingCycle> _Cycles = default!;
@@ -24,13 +22,9 @@ namespace mouse_lighting.ViewModels
         private int indexLightingCycle = -1;
         public int IndexLightingCycle { get => indexLightingCycle; set => Set(ref indexLightingCycle, value); }
         public CyclesViewModel(
-            IUserDialog UserDialog,
-            IDataService DataService,
             IDataTransferBetweenViews dataTransferView,
             ICyclesModels cyclesModels)
         {
-            _UserDialog = UserDialog;
-            _DataService = DataService;
             _DataTransferView = dataTransferView;
             Cycles = new ObservableCollection<LightingCycle>();
             _CyclesModels = cyclesModels;

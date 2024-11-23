@@ -15,8 +15,6 @@ namespace mouse_lighting.ViewModels
 
         private readonly LightingModel _LightingModel;
         private readonly IDataTransferBetweenViews _DataTransferView;
-        private readonly IUserDialog _UserDialog;
-        private readonly IDataService _DataService;
 
         private ObservableCollection<Lighting> _Lighting = new();
         public ObservableCollection<Lighting> Lighting { get => _Lighting; set => Set(ref _Lighting, value); }
@@ -34,14 +32,14 @@ namespace mouse_lighting.ViewModels
             }
         }
 
-        public LightingViewModel(IUserDialog UserDialog,
-            IDataService DataService,
-            IDataTransferBetweenViews dataTransferView)
+        public LightingViewModel(
+            IDataTransferBetweenViews dataTransferView, LightingModel lightingModel)
         {
-            _UserDialog = UserDialog;
-            _DataService = DataService;
             _DataTransferView = dataTransferView;
-            _LightingModel = new LightingModel(DataService, UpdateLighting);
+
+            _LightingModel = lightingModel;
+            _LightingModel.UpdateLightingEvent += UpdateLighting;
+
             UpdateLighting();
         }
 

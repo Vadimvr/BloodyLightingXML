@@ -2,15 +2,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:mouse_lighting.Views.View"
         DataContext="{Binding PathsViewModel, Source={StaticResource Locator}}" mc:Ignorable="d" d:DesignHeight="100" d:DesignWidth="800">
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center" Grid.IsSharedSizeScope="True">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
             <ColumnDefinition Width="Auto"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Label Grid.Column="0" Grid.Row="0" Content="Path to XML :" />
         <Label Grid.Column="0" Grid.Row="1" Content="Path to DB :" />
@@ -18,5 +19,6 @@
         <TextBox Grid.Row="1" Grid.Column="1" Text="{Binding PathToDb}" IsReadOnly="True" />
         <Button Grid.Column="2" Grid.Row="0" Command="{Binding SelectPatToXmlCommand}" Margin="5,0,0,0">Select path to Xml</Button>
         <Button Grid.Column="2" Grid.Row="1" Command="{Binding SelectPathToDbCommand}" Margin="5,0,0,0">Select path to Db</Button>
+        <Button Grid.Column="2" Grid.Row="2" Command="{Binding SelectPathToDbCommand}" Margin="5,0,0,0">FindFolder</Button>
     </Grid>
 </UserControl>

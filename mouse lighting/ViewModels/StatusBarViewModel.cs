@@ -15,6 +15,7 @@ namespace mouse_lighting.ViewModels
 
         public StatusBarViewModel(IObserverStatusBar observerStatusBar)
         {
+            //TODO: 
             _StatusBarModel = new StatusBarModel(UpdateStatusBar);
             ((ObserverStatusBar)observerStatusBar).UpdateStatusBarEvent(_StatusBarModel.UpdateStatusBar);
             observerStatusBar.StatusBar("Ready");

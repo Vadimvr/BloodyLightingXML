@@ -2,7 +2,7 @@
 
 namespace mouse_lighting.Models
 {
-    class StatusBarModel
+    internal class StatusBarModel
     {
         public string Message { get; private set; }
         public string Color { get; private set; }

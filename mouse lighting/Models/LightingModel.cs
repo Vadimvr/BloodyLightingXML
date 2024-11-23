@@ -3,7 +3,7 @@ using mouse_lighting.Services.DataService;
 
 namespace mouse_lighting.Models
 {
-    class LightingModel
+   internal class LightingModel
     {
         private Lighting? selectedLighting = default!;
 
@@ -19,9 +19,9 @@ namespace mouse_lighting.Models
         }
         public IDataService _DataService { get; }
 
-        internal LightingModel(IDataService dataService, Action updateLighting)
+        public LightingModel(IDataService dataService)
         {
-            UpdateLightingEvent += updateLighting;
+         //   UpdateLightingEvent += updateLighting;
             _DataService = dataService;
             _DataService.UpdatePathDbEvent += UpdateDbPath;
             Lighting = _DataService.DB.Lighting.ToList();
@@ -35,7 +35,7 @@ namespace mouse_lighting.Models
         }
 
         event Action? UpdateSelectedLightingEvent;
-        event Action? UpdateLightingEvent;
+        public event Action? UpdateLightingEvent;
 
         internal Lighting AddNew()
         {
@@ -68,7 +68,7 @@ namespace mouse_lighting.Models
 
         private void RemoveFile(Lighting lighting)
         {
-            //TODO:  throw new NotImplementedException();
+            //TODO:   throw new NotImplementedException();
         }
 
         private void UpdateData()

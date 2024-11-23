@@ -23,10 +23,6 @@ namespace mouse_lighting.ViewModels
 
            .AddSingleton<MainWindowViewModel>()
            .AddSingleton<TaskbarViewModel>()
-
-        //.AddSingleton<LightingViewModel>()
-        //.AddSingleton<LightingCycleViewMode>()
-        //.AddSingleton<MainViewModel>()
         ;
     }
 }
