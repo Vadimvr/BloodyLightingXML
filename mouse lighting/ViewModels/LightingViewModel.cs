@@ -34,8 +34,6 @@ namespace mouse_lighting.ViewModels
             }
         }
 
-        private event Action? SelectedLightingEvent;
-
         public LightingViewModel(IUserDialog UserDialog,
             IDataService DataService,
             IDataTransferBetweenViews dataTransferView)

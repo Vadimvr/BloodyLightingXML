@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
+using mouse_lighting.Models;
 using mouse_lighting.Services;
 using mouse_lighting.ViewModels;
 using System.Data;
@@ -23,7 +24,8 @@ namespace mouse_lighting
           .ConfigureAppConfiguration(cfg => cfg.AddJsonFile("appsettings.json", true, true))
           .ConfigureServices((host, services) => services
               .AddViewModels()
-              .AddServices())
+              .AddServices(host.Configuration)
+          )
           .Build();
 
         public static IServiceProvider Services => Host.Services;

@@ -1,17 +1,14 @@
 ﻿using Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Windows.Media;
 
 namespace mouse_lighting.Services.LightingHandlers
 {
-    internal interface ILightingHandlerCreator
+    internal interface ILightingConvert
     {
         public List<FrameCycle> Worker(Lighting lighting);
     }
 
-    internal class LightingHandlerCreator : ILightingHandlerCreator
+    internal class LightingConvert : ILightingConvert
     {
         public List<FrameCycle> Worker(Lighting lighting)
         {

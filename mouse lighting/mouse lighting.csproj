@@ -11,14 +11,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<None Remove="Monikers.imagemanifest" />
 		<None Remove="Styles\Icons\Icon.ico" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <content Include="Monikers.imagemanifest">
-	    <IncludeInVSIX>true</IncludeInVSIX>
-	  </content>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -39,6 +32,12 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Models\Models.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="appsettings.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
 	</ItemGroup>
 </Project>
 

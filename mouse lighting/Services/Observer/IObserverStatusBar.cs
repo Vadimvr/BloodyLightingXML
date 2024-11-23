@@ -1,5 +1,4 @@
 ﻿using mouse_lighting.Services.UserDialog;
-using System.Drawing;
 
 namespace mouse_lighting.Services.Observer
 {

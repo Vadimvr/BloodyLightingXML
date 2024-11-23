@@ -5,29 +5,37 @@ namespace mouse_lighting.Models
 {
     class LightingModel
     {
-        private Lighting selectedLighting = default!;
+        private Lighting? selectedLighting = default!;
 
         public List<Lighting> Lighting { get; set; } = default!;
 
-        public Lighting SelectedLighting
+        public Lighting? SelectedLighting
         {
             get => selectedLighting; set
             {
                 selectedLighting = value;
-                UpdateSelectedLighting?.Invoke();
+                UpdateSelectedLightingEvent?.Invoke();
             }
         }
         public IDataService _DataService { get; }
 
         internal LightingModel(IDataService dataService, Action updateLighting)
         {
-            UpdateLighting += updateLighting;
+            UpdateLightingEvent += updateLighting;
             _DataService = dataService;
+            _DataService.UpdatePathDbEvent += UpdateDbPath;
             Lighting = _DataService.DB.Lighting.ToList();
         }
 
-        event Action? UpdateSelectedLighting;
-        event Action? UpdateLighting;
+        private void UpdateDbPath()
+        {
+            SelectedLighting = null;
+            Lighting = _DataService.DB.Lighting.ToList();
+            UpdateLightingEvent?.Invoke();
+        }
+
+        event Action? UpdateSelectedLightingEvent;
+        event Action? UpdateLightingEvent;
 
         internal Lighting AddNew()
         {
@@ -60,14 +68,14 @@ namespace mouse_lighting.Models
 
         private void RemoveFile(Lighting lighting)
         {
-          //TODO:  throw new NotImplementedException();
+            //TODO:  throw new NotImplementedException();
         }
 
         private void UpdateData()
         {
             _DataService.DB.SaveChanges();
             Lighting = _DataService.DB.Lighting.ToList();
-            UpdateLighting?.Invoke();
+            UpdateLightingEvent?.Invoke();
         }
     }
 }

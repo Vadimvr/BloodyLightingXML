@@ -1,26 +1,22 @@
 ﻿using Models;
 using mouse_lighting.Services.DataService;
 using System.Collections.ObjectModel;
-using mouse_lighting.Services.LightingHandlers;
 namespace mouse_lighting.Models
 {
-    class CyclesModels
+    internal class CyclesModels : ICyclesModels
     {
-        private IDataService _DataService;
+        private readonly IExportService ExportService;
+        private readonly IDataService _DataService;
         public Lighting? Lighting { get; set; }
-
         public ObservableCollection<LightingCycle> Cycles { get; private set; }
-
-        List<LightingCycle> CyclesAll;
 
         public event Action? UpdateCyclesEvent;
 
-        internal CyclesModels(IDataService dataService)
+        public CyclesModels(IDataService dataService, IExportService exportService)
         {
             _DataService = dataService;
             Cycles = new ObservableCollection<LightingCycle>();
-            CyclesAll = _DataService.DB.LightingCycles.ToList();
-
+            ExportService = exportService;
         }
 
         public void UpdateCycles(int id)
@@ -38,7 +34,7 @@ namespace mouse_lighting.Models
             UpdateCyclesEvent?.Invoke();
         }
 
-        internal void AddNew()
+        public void AddNew()
         {
             if (Lighting == null) throw new ArgumentNullException(nameof(Lighting));
 
@@ -48,7 +44,7 @@ namespace mouse_lighting.Models
             UpdateCyclesEvent?.Invoke();
         }
 
-        internal void Delete(object? p)
+        public void Delete(object? p)
         {
             if (p is not int) { throw new ArgumentNullException(nameof(p)); }
 
@@ -64,7 +60,7 @@ namespace mouse_lighting.Models
             UpdateCyclesEvent?.Invoke();
         }
 
-        internal void Up(object? p)
+        public void Up(object? p)
         {
             if (p is not int) { throw new ArgumentNullException(nameof(p)); }
             var indexNumber = (int)p;
@@ -72,7 +68,7 @@ namespace mouse_lighting.Models
             Down(indexNumber - 1);
         }
 
-        internal void Down(object? p)
+        public void Down(object? p)
         {
             if (p is not int) { throw new ArgumentNullException(nameof(p)); }
             var indexNumber = (int)p;
@@ -93,7 +89,7 @@ namespace mouse_lighting.Models
             UpdateCyclesEvent?.Invoke();
         }
 
-        internal void SaveInDb()
+        public void SaveInDb()
         {
             foreach (var item in Cycles)
             {
@@ -109,16 +105,9 @@ namespace mouse_lighting.Models
             _DataService.DB.SaveChanges();
         }
 
-        internal void Export()
+        public void Export()
         {
-            if (Lighting != null)
-            {
-                LightingHandlerCreator LightingHandlerCreator = new LightingHandlerCreator();
-
-                List<FrameCycle> frames = LightingHandlerCreator
-                    .Worker(Lighting);
-                _DataService.SaveToXML(Lighting, frames);
-            }
+            if (Lighting != null) { ExportService.ExportXml(Lighting, _DataService.Setting.PathToXML); }
         }
     }
 }

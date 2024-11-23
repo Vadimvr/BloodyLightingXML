@@ -16,7 +16,7 @@ namespace mouse_lighting.ViewModels
         private readonly IDataTransferBetweenViews _DataTransferView;
         private readonly IUserDialog _UserDialog;
         private readonly IDataService _DataService;
-        readonly CyclesModels _CyclesModels;
+        private readonly ICyclesModels _CyclesModels;
 
         private ObservableCollection<LightingCycle> _Cycles = default!;
         public ObservableCollection<LightingCycle> Cycles { get => _Cycles; set => Set(ref _Cycles, value); }
@@ -26,13 +26,14 @@ namespace mouse_lighting.ViewModels
         public CyclesViewModel(
             IUserDialog UserDialog,
             IDataService DataService,
-            IDataTransferBetweenViews dataTransferView)
+            IDataTransferBetweenViews dataTransferView,
+            ICyclesModels cyclesModels)
         {
             _UserDialog = UserDialog;
             _DataService = DataService;
             _DataTransferView = dataTransferView;
             Cycles = new ObservableCollection<LightingCycle>();
-            _CyclesModels = new CyclesModels(_DataService);
+            _CyclesModels = cyclesModels;
             _DataTransferView.UpdateSelectedLightingEvent += _CyclesModels.UpdateCycles;
             _CyclesModels.UpdateCyclesEvent += UpdateCycles;
         }

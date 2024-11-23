@@ -1,40 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Models;
-using System.IO;
+using mouse_lighting.Models;
 using System.Windows.Media;
 
 namespace mouse_lighting.Services.db
 {
-    public class ApplicationContextSqLite : DbContext
+    public class ApplContextSqLite : DbContext
     {
-        string endFolder;
-        public ApplicationContextSqLite(string PathToDb)
+        readonly Setting _Setting;
+        public ApplContextSqLite(DbContextOptions<ApplContextSqLite> options, Setting setting) : base(options)
         {
-            if (string.IsNullOrEmpty(PathToDb))
-            {
-                throw new ArgumentNullException(nameof(PathToDb));
-            }
-            else
-            {
-                endFolder = PathToDb;
-            }
+            _Setting = setting;
+            _Setting.UpdateDbPathEvent += UpUpdateDbPath;
             Database.EnsureCreated();
         }
-        internal DbSet<Lighting> Lighting { get; set; }
-        internal DbSet<LightingCycle> LightingCycles { get; set; }
+
+        private void UpUpdateDbPath()
+        {
+            Database.CloseConnection();
+        }
+
+        internal DbSet<Lighting> Lighting { get; set; } = default!;
+        internal DbSet<LightingCycle> LightingCycles { get; set; } = default!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
-            if (!Directory.Exists(endFolder))
-            {
-                Directory.CreateDirectory(endFolder);
-            }
+            if (string.IsNullOrEmpty(_Setting.PathToDb)) { throw new ArgumentNullException(nameof(Setting.PathToDb)); }
             optionsBuilder.EnableSensitiveDataLogging();
-            optionsBuilder.UseSqlite($"Data Source={endFolder}\\SLED.db");
-
+            optionsBuilder.UseSqlite($"Data Source={_Setting.PathToDb}");
         }
+
         protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
         {
             configurationBuilder.Properties<Color>().HaveConversion<ColorEFConverter>();
@@ -43,7 +39,6 @@ namespace mouse_lighting.Services.db
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Lighting>().Navigation(e => e.Cycles).AutoInclude();
-
         }
     }
     public class ColorEFConverter : ValueConverter<Color, string>
