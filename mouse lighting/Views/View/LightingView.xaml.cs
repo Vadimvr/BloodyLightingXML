@@ -16,7 +16,7 @@ using System.Windows.Shapes;
 namespace mouse_lighting.Views.View
 {
     /// <summary>
-    /// Логика взаимодействия для LightingView.xaml
+    /// Логика взаимодействия для LightingView_1.xaml
     /// </summary>
     public partial class LightingView : UserControl
     {

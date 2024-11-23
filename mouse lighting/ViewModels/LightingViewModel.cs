@@ -1,99 +1,76 @@
-﻿using mouse_lighting.Infrastructure.Commands;
+﻿using Models;
+using mouse_lighting.Commands.Base;
+using mouse_lighting.Models;
+using mouse_lighting.Services.DataService;
+using mouse_lighting.Services.Interfaces;
+using mouse_lighting.Services.UserDialog;
 using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
-using System;
-using mouse_lighting.Services.Interfaces;
-using System.Windows.Media;
-using System.Linq;
-using System.Collections.Generic;
-using Models;
 
 namespace mouse_lighting.ViewModels
 {
-    internal class LightingViewModel : ViewModel
+    internal class LightingViewModel : ViewModelBase
     {
-        private IDataTransferBetweenViews _DataTransferView;
-        private IUserDialog _UserDialog;
-        private IDataService _DataService;
 
-        public LightingViewModel(IUserDialog UserDialog,
-            IDataService DataService,
-            IDataTransferBetweenViews dataTransferView)
-        {
-            _DataTransferView = dataTransferView;
-            _UserDialog = UserDialog;
-            _DataService = DataService;
-            Models.Lighting.NameChanged += LightingNameChanged;
-            SetDataFromDb();
-        }
+        private readonly LightingModel _LightingModel;
+        private readonly IDataTransferBetweenViews _DataTransferView;
 
-        private void LightingNameChanged(string name, string value, int id)
-        {
-            var lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == id);
-            if (lighting != null)
-            {
-                lighting.Name = value;
-                _DataService.DB.Update(lighting);
-                _DataService.DB.SaveChanges();
-            }
-        }
-
-        private ObservableCollection<Color> _Colors;
-        public ObservableCollection<Color> Colors { get => _Colors; set => Set(ref _Colors, value); }
-
-        private ObservableCollection<Lighting> _Lighting;
+        private ObservableCollection<Lighting> _Lighting = new();
         public ObservableCollection<Lighting> Lighting { get => _Lighting; set => Set(ref _Lighting, value); }
 
-        private Lighting _SelectedLighting;
-        public Lighting SelectedLighting
+
+        private Lighting? _SelectedLighting;
+        public Lighting? SelectedLighting
         {
-            //TODO ошибка когда добавилась новая запись.
-            get { return _SelectedLighting; }
-            set
+            get => _SelectedLighting; set
             {
                 if (Set(ref _SelectedLighting, value))
                 {
-                    _DataTransferView.SetLighting(_SelectedLighting);
+                    _DataTransferView.Update(_SelectedLighting == null ? 0 : _SelectedLighting.Id);
                 }
             }
         }
 
-        #region AddNewLightingCommand
-        private LambdaCommand _AddNewLightingCommand;
+        public LightingViewModel(
+            IDataTransferBetweenViews dataTransferView, LightingModel lightingModel)
+        {
+            _DataTransferView = dataTransferView;
+
+            _LightingModel = lightingModel;
+            _LightingModel.UpdateLightingEvent += UpdateLighting;
+
+            UpdateLighting();
+        }
+
+        private void UpdateLighting()
+        {
+            Lighting.Clear();
+            _LightingModel.Lighting.ForEach(x => { Lighting.Add(x); });
+        }
+
+        #region AddNewLightingCommand - описание команды 
+        private LambdaCommand? _AddNewLightingCommand;
         public ICommand AddNewLightingCommand => _AddNewLightingCommand ??=
             new LambdaCommand(OnAddNewLightingCommandExecuted, CanAddNewLightingCommandExecute);
-        private bool CanAddNewLightingCommandExecute(object p) => true;
-        private void OnAddNewLightingCommandExecuted(object p)
+        private bool CanAddNewLightingCommandExecute(object? p) => _LightingModel.Lighting != null;
+        private void OnAddNewLightingCommandExecuted(object? p)
         {
-            if (Lighting == null)
-            {
-                Lighting = new ObservableCollection<Lighting>();
-            }
-            var defNewName = "New animation";
-            var newName = defNewName;
-            var j = 0;
-            for (int i = 0; i < Lighting.Count; i++)
-            {
-                if (Lighting[i].Name == newName)
-                {
-                    i = 0;
-                    j++;
-                    newName = $"{defNewName}_{j}";
-                }
-            }
-            var lighting = new Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName };
-            SelectedLighting = lighting;
-            _DataService.DB.Lighting.Add(lighting);
-            _DataService.DB.SaveChanges();
-            SetDataFromDb();
+            var id = _LightingModel.AddNew().Id;
+            SelectedLighting = Lighting.SingleOrDefault(x => x.Id == id);
         }
         #endregion
 
-        private void SetDataFromDb()
-        {
-            var x = _DataService.DB.Lighting;
-            Lighting = new ObservableCollection<Lighting>(x);
-        }
+        #region RemoveLightingCommand - описание команды 
+        private LambdaCommand? _RemoveLightingCommand;
+        public ICommand RemoveLightingCommand => _RemoveLightingCommand ??=
+            new LambdaCommand(OnRemoveLightingCommandExecuted, CanRemoveLightingCommandExecute);
+        private bool CanRemoveLightingCommandExecute(object? p) => SelectedLighting != null;
+        private void OnRemoveLightingCommandExecuted(object? p) { if (SelectedLighting != null) { _LightingModel.Remove(SelectedLighting); } }
+        #endregion
     }
 }
+
+
+
+

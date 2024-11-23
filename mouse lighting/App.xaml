@@ -1,22 +1,16 @@
-﻿<Application x:Class="mouse_lighting.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:mouse_lighting"
-             StartupUri="Views/Windows/MainWindow.xaml"
-             xmlns:vm="clr-namespace:mouse_lighting.ViewModels">
+﻿<Application x:Class="mouse_lighting.App" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:l="clr-namespace:mouse_lighting"
+        xmlns:vm="clr-namespace:mouse_lighting.ViewModels" StartupUri="Views\Windows\MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="Resources/ThemeStyle.xaml" />
-                <ResourceDictionary Source="Infrastructure/Commands/Commands.xaml" />
-                <ResourceDictionary Source="Resources/Base/Brushes.xaml" />
-                <ResourceDictionary Source="Resources/ButtonStyle.xaml" />
-                <ResourceDictionary Source="Resources/ButtonInDataGridRowArrow.xaml" />
-                <ResourceDictionary Source="Resources/LightingCycleDataGrid.xaml" />
-                <ResourceDictionary Source="Resources/CaptionButtonStyle.xaml" />
+                <ResourceDictionary Source="Styles\Other\Base.xaml" />
+                <ResourceDictionary Source="Styles\Other\MenuItem.xaml" />
 
+                <ResourceDictionary Source="Styles\WindowStyle\MainWindowStyle.xaml" />
+                <ResourceDictionary Source="Commands\Other\Commands.xaml" />
+                <ResourceDictionary Source="Styles\Other\StylesResourceDictionary.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
 
             <vm:ViewModelLocator x:Key="Locator" />
         </ResourceDictionary>

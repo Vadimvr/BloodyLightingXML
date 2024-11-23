@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Windows.Media;
 
@@ -41,6 +42,22 @@ namespace Models
         public Color ColorSecondEnd { get; set; } = Color.FromRgb(0, 0, 0);
         public float DisplayTime { get; set; } = 1;
         public int Step { get; set; } = 32;
+
+        public LightingCycle Clone()
+        {
+            return new LightingCycle()
+            {
+                Id = Id,
+                IndexNumber = IndexNumber,
+                LightingId = LightingId,
+                ColorWheelStart = ColorWheelStart,
+                ColorWheelEnd = ColorWheelEnd,
+                ColorSecondStart = ColorSecondStart,
+                ColorSecondEnd = ColorSecondEnd,
+                DisplayTime = DisplayTime,
+                Step = Step
+            };
+        }
         //public LightingHandlersEnum Handler { get; set; } = LightingHandlersEnum.ShowHide;
     }
 
