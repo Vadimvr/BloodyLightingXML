@@ -36,7 +36,7 @@ namespace mouse_lighting.Models
                             Lighting lighting = new Lighting()
                             {
                                 Name = $"{locate} {dir}",
-                                Guid = Guid.Parse("00000000-0000-0000-0000-000000000000"),
+                                Guid = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                                 Cycles = new List<LightingCycle> { new LightingCycle() }
                             };
                             _IExport.ExportXml(lighting, pa);
