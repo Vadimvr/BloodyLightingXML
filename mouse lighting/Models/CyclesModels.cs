@@ -8,29 +8,26 @@ namespace mouse_lighting.Models
         private readonly IExportService ExportService;
         private readonly IDataService _DataService;
         public Lighting? Lighting { get; set; }
-        public ObservableCollection<LightingCycle> Cycles { get; private set; }
+        public List<LightingCycle> Cycles { get; private set; }
 
         public event Action? UpdateCyclesEvent;
-
+        private List<LightingCycle> removedCycles;
         public CyclesModels(IDataService dataService, IExportService exportService)
         {
             _DataService = dataService;
-            Cycles = new ObservableCollection<LightingCycle>();
+            Cycles = new List<LightingCycle>();
             ExportService = exportService;
+            removedCycles = new List<LightingCycle>();
         }
 
         public void UpdateCycles(int id)
         {
-
+            removedCycles = new List<LightingCycle>();
             Lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == id);
+            
             Cycles.Clear();
-            if (Lighting != null)
-            {
-                foreach (var item in Lighting.Cycles.OrderBy(c => c.IndexNumber))
-                {
-                    Cycles.Add(item);
-                }
-            }
+            Cycles.AddRange(_DataService.DB.LightingCycles.Where(x => x.LightingId == id));
+            
             UpdateCyclesEvent?.Invoke();
         }
 
@@ -38,25 +35,35 @@ namespace mouse_lighting.Models
         {
             if (Lighting == null) throw new ArgumentNullException(nameof(Lighting));
 
-            LightingCycle cycle = new LightingCycle() { LightingId = Lighting.Id, IndexNumber = Cycles.Count() };
-            cycle = _DataService.DB.Add(cycle).Entity;
-            Cycles.Add(cycle);
+            for (int i = 0; i < 1000; i++)
+            {
+                LightingCycle cycle = new LightingCycle() { LightingId = Lighting.Id, IndexNumber = Cycles.Count() };
+                Cycles.Add(cycle);
+            }
             UpdateCyclesEvent?.Invoke();
         }
+
+
 
         public void Delete(object? p)
         {
             if (p is not int) { throw new ArgumentNullException(nameof(p)); }
 
             var indexNumber = (int)p;
-            for (int i = indexNumber + 1; i < Cycles.Count; i++)
-            {
-                Cycles[i].IndexNumber -= 1;
-                _DataService.DB.Update(Cycles[i]);
-            }
 
-            _DataService.DB.Remove(Cycles[indexNumber]);
-            Cycles.RemoveAt(indexNumber);
+            var removedCycle = Cycles.FirstOrDefault(x => x.IndexNumber == indexNumber);
+
+            if (removedCycle == null) { return; }
+            removedCycles.Add(removedCycle);
+
+            for (int i = 0; i < Cycles.Count; i++)
+            {
+                if (Cycles[i].IndexNumber > indexNumber)
+                {
+                    Cycles[i].IndexNumber -= 1;
+                }
+            }
+            Cycles.Remove(removedCycle);
             UpdateCyclesEvent?.Invoke();
         }
 
@@ -84,8 +91,6 @@ namespace mouse_lighting.Models
             var x = Cycles[indexNumber];
             Cycles[indexNumber] = Cycles[indexNumber + 1];
             Cycles[indexNumber + 1] = x;
-            _DataService.DB.Update(Cycles[indexNumber]);
-            _DataService.DB.Update(Cycles[indexNumber + 1]);
             UpdateCyclesEvent?.Invoke();
         }
 
@@ -100,6 +105,13 @@ namespace mouse_lighting.Models
                 else
                 {
                     _DataService.DB.Update(item);
+                }
+            }
+            foreach (var item in removedCycles)
+            {
+                if (item.Id > 0)
+                {
+                    _DataService.DB.Remove(item);
                 }
             }
             _DataService.DB.SaveChanges();

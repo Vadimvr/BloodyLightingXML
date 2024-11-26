@@ -1,9 +1,7 @@
 ﻿using Models;
 using mouse_lighting.Commands.Base;
 using mouse_lighting.Models;
-using mouse_lighting.Services.DataService;
 using mouse_lighting.Services.Interfaces;
-using mouse_lighting.Services.UserDialog;
 using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -32,14 +30,35 @@ namespace mouse_lighting.ViewModels
             _CyclesModels.UpdateCyclesEvent += UpdateCycles;
         }
 
-        private void UpdateCycles() => Cycles = _CyclesModels.Cycles;
+        private void UpdateCycles()
+        {
+            Cycles.Clear();
+            foreach (var cycle in _CyclesModels.Cycles)
+            {
+                Cycles.Add(cycle);
+            }
+        }
 
 
         #region AddNewCycleCommand - описание команды 
         private LambdaCommand? _AddNewCycleCommand;
         public ICommand AddNewCycleCommand => _AddNewCycleCommand ??=
-            new LambdaCommand((p) => _CyclesModels.AddNew(), (p) => _DataTransferView.Id > 0);
+            new LambdaCommand(OnAddNewCycleCommandExecuted, CanAddNewCycleCommandExecute);
+        private bool CanAddNewCycleCommandExecute(object? p) => _DataTransferView.Id > 0;
+        private void OnAddNewCycleCommandExecuted(object? p)
+        {
+            _CyclesModels.AddNew();
+        }
         #endregion
+
+
+        //#region AddNewCycleCommand - описание команды 
+        //private LambdaCommand? _AddNewCycleCommand;
+        //public ICommand AddNewCycleCommand => _AddNewCycleCommand ??=
+        //    new LambdaCommand(
+        //        (p) => _CyclesModels.AddNew(),
+        //        (p) => _DataTransferView.Id > 0);
+        //#endregion
 
 
         #region RemoveCycleCommand - описание команды 

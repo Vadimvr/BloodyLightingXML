@@ -38,7 +38,7 @@ namespace mouse_lighting.Services.db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Lighting>().Navigation(e => e.Cycles).AutoInclude();
+         //   modelBuilder.Entity<Lighting>().Navigation(e => e.Cycles).AutoInclude();
         }
     }
     public class ColorEFConverter : ValueConverter<Color, string>
