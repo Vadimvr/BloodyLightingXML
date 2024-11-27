@@ -1,38 +1,62 @@
-﻿using Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
 using mouse_lighting.Services.DataService;
-using System.Collections.ObjectModel;
+using mouse_lighting.Services.DataService.Repository;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 namespace mouse_lighting.Models
 {
     internal class CyclesModels : ICyclesModels
     {
         private readonly IExportService ExportService;
+        private readonly IRepository<Lighting> Lightings;
+        private readonly IRepository<LightingCycle> LightingCycles;
         private readonly IDataService _DataService;
+
+
         public Lighting? Lighting { get; set; }
-        public List<LightingCycle> Cycles { get; private set; }
+        public List<LightingCycle> Cycles { get; private set; } = new List<LightingCycle>();
+        private List<LightingCycle> removedCycles = new List<LightingCycle>();
+        private object lock_OBJECT = new object();
 
         public event Action? UpdateCyclesEvent;
-        private List<LightingCycle> removedCycles;
-        public CyclesModels(IDataService dataService, IExportService exportService)
+        public CyclesModels(IDataService dataService, IExportService exportService, IRepository<Lighting> Lightings, IRepository<LightingCycle> LightingCycles)
         {
             _DataService = dataService;
-            Cycles = new List<LightingCycle>();
             ExportService = exportService;
-            removedCycles = new List<LightingCycle>();
+            this.Lightings = Lightings;
+            this.LightingCycles = LightingCycles;
         }
 
-        public void UpdateCycles(int id)
+        public async void UpdateCycles(int id)
         {
-            removedCycles = new List<LightingCycle>();
-            Lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == id);
-            
+            removedCycles.Clear();
             Cycles.Clear();
-            Cycles.AddRange(_DataService.DB.LightingCycles.Where(x => x.LightingId == id));
-            
+            await Task.Run(async () =>
+                  {
+                      Monitor.Enter(lock_OBJECT);
+                      try
+                      {
+                          if (id > 0)
+                          {
+                              Lighting = await Lightings.Items.SingleOrDefaultAsync(l => l.Id == id);
+                              if (Lighting == null || Lighting.Cycles == null) { throw new ArgumentNullException(nameof(Lighting)); }
+
+                              Cycles.AddRange(LightingCycles.Items.Where(x => x.LightingId == Lighting.Id));
+                          }
+                      }
+                      finally
+                      {
+                          Monitor.Exit(lock_OBJECT);
+                      }
+                  });
+
             UpdateCyclesEvent?.Invoke();
         }
 
         public void AddNew()
         {
+
             if (Lighting == null) throw new ArgumentNullException(nameof(Lighting));
 
             for (int i = 0; i < 1000; i++)
@@ -42,8 +66,6 @@ namespace mouse_lighting.Models
             }
             UpdateCyclesEvent?.Invoke();
         }
-
-
 
         public void Delete(object? p)
         {
@@ -94,32 +116,41 @@ namespace mouse_lighting.Models
             UpdateCyclesEvent?.Invoke();
         }
 
-        public void SaveInDb()
+        public async Task SaveInDb()
         {
-            foreach (var item in Cycles)
+            Monitor.Enter(lock_OBJECT);
+            try
             {
-                if (item.Id == 0)
+                foreach (var item in Cycles)
                 {
-                    _DataService.DB.Add(item);
+                    if (item.Id == 0)
+                    {
+                        await LightingCycles.AddAsync(item, false);
+                    }
+                    else
+                    {
+                        await LightingCycles.UpdateAsync(item.Id, item, false);
+                    }
                 }
-                else
+                foreach (var item in removedCycles)
                 {
-                    _DataService.DB.Update(item);
+                    if (item.Id > 0)
+                    {
+                        await LightingCycles.DeleteAsync(item.Id, false);
+                    }
                 }
+                await LightingCycles.SaveAsync();
             }
-            foreach (var item in removedCycles)
-            {
-                if (item.Id > 0)
-                {
-                    _DataService.DB.Remove(item);
-                }
-            }
-            _DataService.DB.SaveChanges();
-        }
+            finally { Monitor.Exit(lock_OBJECT); }
 
+        }
         public void Export()
         {
-            if (Lighting != null) { ExportService.ExportXml(Lighting, _DataService.Setting.PathToXML); }
+            if (Lighting != null)
+            {
+                var l = Lighting.CloneWithoutLightingCycles(Cycles);
+                ExportService.ExportXml(l, _DataService.Setting.PathToXML);
+            }
         }
     }
 }

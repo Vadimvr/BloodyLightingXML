@@ -2,8 +2,10 @@
 using mouse_lighting.Commands.Base;
 using mouse_lighting.Models;
 using mouse_lighting.Services.Interfaces;
+using mouse_lighting.Services.Observer;
 using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 namespace mouse_lighting.ViewModels
@@ -13,7 +15,7 @@ namespace mouse_lighting.ViewModels
         //TODO: create style from color Picker
         private readonly IDataTransferBetweenViews _DataTransferView;
         private readonly ICyclesModels _CyclesModels;
-
+        private readonly IObserverStatusBar statusBar;
         private ObservableCollection<LightingCycle> _Cycles = default!;
         public ObservableCollection<LightingCycle> Cycles { get => _Cycles; set => Set(ref _Cycles, value); }
 
@@ -21,11 +23,12 @@ namespace mouse_lighting.ViewModels
         public int IndexLightingCycle { get => indexLightingCycle; set => Set(ref indexLightingCycle, value); }
         public CyclesViewModel(
             IDataTransferBetweenViews dataTransferView,
-            ICyclesModels cyclesModels)
+            ICyclesModels cyclesModels, IObserverStatusBar StatusBar)
         {
             _DataTransferView = dataTransferView;
             Cycles = new ObservableCollection<LightingCycle>();
             _CyclesModels = cyclesModels;
+            statusBar = StatusBar;
             _DataTransferView.UpdateSelectedLightingEvent += _CyclesModels.UpdateCycles;
             _CyclesModels.UpdateCyclesEvent += UpdateCycles;
         }
@@ -86,10 +89,33 @@ namespace mouse_lighting.ViewModels
             new LambdaCommand((p) => _CyclesModels.Down(p));
         #endregion
 
-        #region SaveInDBCommand
-        private LambdaCommand? _SaveInDBCommand;
+        //#region SaveInDBCommand
+        //private LambdaCommandAsync? _SaveInDBCommand;
+        //public ICommand SaveInDBCommand => _SaveInDBCommand ??=
+        //    new LambdaCommandAsync( async () =>await _CyclesModels.SaveInDb(), () => _DataTransferView.Id > 0);
+        //#endregion
+
+
+        #region SaveInDBCommand - описание команды 
+        private LambdaCommandAsync? _SaveInDBCommand;
         public ICommand SaveInDBCommand => _SaveInDBCommand ??=
-            new LambdaCommand(() => _CyclesModels.SaveInDb(), () => _DataTransferView.Id > 0);
+            new LambdaCommandAsync(OnSaveInDBCommandExecuted, CanSaveInDBCommandExecute);
+
+        private bool CanSaveInDBCommandExecute() => _DataTransferView.Id > 0;
+
+        private async Task OnSaveInDBCommandExecuted()
+        {
+
+            await Task.Run(() =>
+            {
+                statusBar.StatusBar("Start");
+                _CyclesModels.SaveInDb();
+                statusBar.StatusBar("End");
+            });
+        }
+        //private bool CanSaveInDBCommandExecute(object p) => true;
+        //private async void OnSaveInDBCommandExecuted(object p) { }
         #endregion
+
     }
 }

@@ -10,7 +10,7 @@ namespace mouse_lighting.Services.DataService
 {
     interface IExportService
     {
-        public void ExportXml(Lighting lighting, string path);
+        public void ExportXml(Lighting? lighting, string? path);
     }
     internal class ExportService : IExportService
     {
@@ -50,7 +50,7 @@ namespace mouse_lighting.Services.DataService
             return doc;
         }
 
-        public void ExportXml(Lighting lighting, string path)
+        public void ExportXml(Lighting? lighting, string? path)
         {
             if (lighting == null || lighting.Cycles == null || lighting.Guid == default! || string.IsNullOrEmpty(lighting.Name))
             { throw new ArgumentException(nameof(lighting)); }

@@ -1,11 +1,13 @@
 ﻿using Models;
 using mouse_lighting.Services.DataService;
+using mouse_lighting.Services.DataService.Repository;
 
 namespace mouse_lighting.Models
 {
-   internal class LightingModel
+    internal class LightingModel
     {
         private Lighting? selectedLighting = default!;
+        private readonly IRepository<Lighting> _Lightings;
 
         public List<Lighting> Lighting { get; set; } = default!;
 
@@ -19,18 +21,20 @@ namespace mouse_lighting.Models
         }
         public IDataService _DataService { get; }
 
-        public LightingModel(IDataService dataService)
+        public LightingModel(IDataService dataService, IRepository<Lighting> Lightings)
         {
-         //   UpdateLightingEvent += updateLighting;
+            //   UpdateLightingEvent += updateLighting;
+
             _DataService = dataService;
             _DataService.UpdatePathDbEvent += UpdateDbPath;
-            Lighting = _DataService.DB.Lighting.ToList();
+            _Lightings = Lightings;
+            Lighting = _Lightings.Items.ToList();
         }
 
         private void UpdateDbPath()
         {
             SelectedLighting = null;
-            Lighting = _DataService.DB.Lighting.ToList();
+            Lighting = _Lightings.Items.ToList();
             UpdateLightingEvent?.Invoke();
         }
 
@@ -51,7 +55,7 @@ namespace mouse_lighting.Models
                 }
             }
 
-            Lighting x = _DataService.DB.Lighting.Add(new Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName }).Entity;
+            Lighting x = _Lightings.Add(new Lighting() { Cycles = new List<LightingCycle>(), Guid = Guid.NewGuid(), Name = newName });
             UpdateData();
             SelectedLighting = x;
             return x;
@@ -61,7 +65,7 @@ namespace mouse_lighting.Models
         {
             if (lighting == null) throw new ArgumentNullException(nameof(lighting));
             if (lighting.Id <= 0) throw new ArgumentNullException(nameof(lighting.Id));
-            _DataService.DB.Lighting.Remove(lighting);
+            _Lightings.Delete(lighting.Id);
             RemoveFile(lighting);
             UpdateData();
         }
@@ -73,9 +77,14 @@ namespace mouse_lighting.Models
 
         private void UpdateData()
         {
-            _DataService.DB.SaveChanges();
-            Lighting = _DataService.DB.Lighting.ToList();
+            _Lightings.Save();
+            Lighting = _Lightings.Items.ToList();
             UpdateLightingEvent?.Invoke();
+        }
+
+        internal async void UpdateName(Lighting selectedLighting)
+        {
+            await _Lightings.UpdateAsync(selectedLighting.Id, selectedLighting);
         }
     }
 }

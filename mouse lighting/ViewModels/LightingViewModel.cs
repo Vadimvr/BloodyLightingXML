@@ -68,6 +68,28 @@ namespace mouse_lighting.ViewModels
         private bool CanRemoveLightingCommandExecute(object? p) => SelectedLighting != null;
         private void OnRemoveLightingCommandExecuted(object? p) { if (SelectedLighting != null) { _LightingModel.Remove(SelectedLighting); } }
         #endregion
+
+
+        #region UpdateNameCommand - описание команды 
+        private LambdaCommand? _UpdateNameCommand;
+        public ICommand UpdateNameCommand => _UpdateNameCommand ??=
+            new LambdaCommand(OnUpdateNameCommandExecuted, CanUpdateNameCommandExecute);
+        private bool CanUpdateNameCommandExecute(object? p) => SelectedLighting != null;
+        private void OnUpdateNameCommandExecuted(object? p)
+        {
+            if (SelectedLighting != null && SelectedLighting.Id > 0 && !string.IsNullOrEmpty(SelectedLighting.Name))
+            {
+                Task.Run(() =>
+                {
+                    Thread.Sleep(10000);
+
+                    _LightingModel.UpdateName(SelectedLighting);
+                }
+                 , default);
+            }
+        }
+        #endregion
+
     }
 }
 

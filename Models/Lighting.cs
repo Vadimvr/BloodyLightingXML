@@ -1,39 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Windows.Media;
 
 namespace Models
 {
-    public class Lighting
+    public abstract class Entity
     {
-        public static Action<string, string, int> NameChanged;
-        private string name;
+        [Key]
         public int Id { get; set; }
-        public string Name
-        {
-            get => name;
-            set
-            {
-                if (Id > 0 && !name.Equals(value))
-                {
-                    name = value;
-                    NameChanged?.Invoke(name, value, Id);
-                }
-                else
-                {
-                    name = value;
-                }
-            }
-        }
-        public Guid Guid { get; set; }
-        public List<LightingCycle> Cycles { get; set; } = new List<LightingCycle>();
+
+        public abstract void Update(Entity entityNew);
     }
 
-    public class LightingCycle
+    public class Lighting : Entity
     {
-        public int Id { get; set; }
+        public string Name { get; set; }
+        public Guid Guid { get; set; }
+        public List<LightingCycle> Cycles { get; set; } = new List<LightingCycle>();
+
+        public override void Update(Entity entityNew)
+        {
+            var x = entityNew as Lighting;
+            if (x is null) { throw new ArgumentNullException(nameof(x)); }
+            this.Name = x.Name;
+        }
+        public Lighting CloneWithoutLightingCycles(List<LightingCycle> cycles)
+        {
+            return new Lighting() { Id = this.Id, Guid = this.Guid, Name = this.Name, Cycles = cycles };
+        }
+
+    }
+
+    public class LightingCycle : Entity
+    {
         public int IndexNumber { get; set; }
         public int LightingId { get; set; }
         public Color ColorWheelStart { get; set; } = Color.FromRgb(0, 0, 0);
@@ -58,7 +60,19 @@ namespace Models
                 Step = Step
             };
         }
-        //public LightingHandlersEnum Handler { get; set; } = LightingHandlersEnum.ShowHide;
+
+        public override void Update(Entity entityNew)
+        {
+            var x = entityNew as LightingCycle;
+            if (x is null) { throw new ArgumentNullException(nameof(x)); }
+            this.IndexNumber = x.IndexNumber;
+            this.LightingId = x.LightingId;
+            this.ColorWheelStart = x.ColorWheelStart;
+            this.ColorWheelEnd = x.ColorWheelEnd;
+            this.ColorSecondStart = x.ColorSecondStart;
+            this.ColorSecondEnd = x.ColorSecondEnd;
+            this.DisplayTime = x.DisplayTime;
+        }
     }
 
     public class FrameCycle
