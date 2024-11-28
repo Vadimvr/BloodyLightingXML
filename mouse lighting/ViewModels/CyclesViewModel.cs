@@ -89,33 +89,17 @@ namespace mouse_lighting.ViewModels
             new LambdaCommand((p) => _CyclesModels.Down(p));
         #endregion
 
-        //#region SaveInDBCommand
-        //private LambdaCommandAsync? _SaveInDBCommand;
-        //public ICommand SaveInDBCommand => _SaveInDBCommand ??=
-        //    new LambdaCommandAsync( async () =>await _CyclesModels.SaveInDb(), () => _DataTransferView.Id > 0);
-        //#endregion
-
-
         #region SaveInDBCommand - описание команды 
-        private LambdaCommandAsync? _SaveInDBCommand;
+        private LambdaCommand? _SaveInDBCommand;
         public ICommand SaveInDBCommand => _SaveInDBCommand ??=
-            new LambdaCommandAsync(OnSaveInDBCommandExecuted, CanSaveInDBCommandExecute);
+            new LambdaCommand(OnSaveInDBCommandExecuted, CanSaveInDBCommandExecute);
 
         private bool CanSaveInDBCommandExecute() => _DataTransferView.Id > 0;
 
-        private async Task OnSaveInDBCommandExecuted()
+        private void OnSaveInDBCommandExecuted()
         {
-
-            await Task.Run(() =>
-            {
-                statusBar.StatusBar("Start");
-                _CyclesModels.SaveInDb();
-                statusBar.StatusBar("End");
-            });
+            _CyclesModels.SaveInDb();
         }
-        //private bool CanSaveInDBCommandExecute(object p) => true;
-        //private async void OnSaveInDBCommandExecuted(object p) { }
         #endregion
-
     }
 }

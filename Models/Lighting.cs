@@ -15,7 +15,7 @@ namespace Models
         public abstract void Update(Entity entityNew);
     }
 
-    public class Lighting : Entity
+    public class Lighting : Entity, IDisposable
     {
         public string Name { get; set; }
         public Guid Guid { get; set; }
@@ -32,6 +32,11 @@ namespace Models
             return new Lighting() { Id = this.Id, Guid = this.Guid, Name = this.Name, Cycles = cycles };
         }
 
+        public void Dispose()
+        {
+            Cycles.Clear();
+
+        }
     }
 
     public class LightingCycle : Entity

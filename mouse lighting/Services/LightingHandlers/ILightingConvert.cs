@@ -13,11 +13,12 @@ namespace mouse_lighting.Services.LightingHandlers
         public List<FrameCycle> Worker(Lighting lighting)
         {
             List<FrameCycle> frames = new List<FrameCycle>();
-            var cycles = lighting.Cycles.OrderBy(c => c.IndexNumber);
+            IOrderedEnumerable<LightingCycle> cycles = lighting.Cycles.OrderBy(c => c.IndexNumber);
             foreach (var item in cycles)
             {
                 FirstColorTransitionFormSecondColor(item, frames);
             }
+            cycles = null;
             return frames;
         }
 

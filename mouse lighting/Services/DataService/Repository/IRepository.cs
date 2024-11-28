@@ -20,6 +20,8 @@ namespace mouse_lighting.Services.DataService.Repository
         Task DeleteAsync(int id, bool autoSeve = true, CancellationToken cancel = default);
         Task UpdateAsync(int id, T entityNew, bool autoSeve = true, CancellationToken cancel = default);
         Task SaveAsync(CancellationToken cancel = default);
+
+        void Clear();
     }
 
     public class Repository<T> : IRepository<T> where T : Entity, new()
@@ -85,12 +87,14 @@ namespace mouse_lighting.Services.DataService.Repository
         public async Task UpdateAsync(int id, T entityNew, bool autoSeve = true, CancellationToken cancel = default)
         {
             if (entityNew is null) { throw new ArgumentNullException($"{nameof(entityNew)} is null"); }
-            T? entity = await GetAsync(id, cancel);
+            T? entity = await GetAsync(id, cancel).ConfigureAwait(false);
             if (entity is null) { throw new ArgumentNullException($"{nameof(entity)}.Id{nameof(id)} is null"); }
             entity.Update(entityNew);
             _Db.Entry(entity).State = EntityState.Modified;
             if (autoSeve) { await _Db.SaveChangesAsync(cancel); }
         }
         public async Task SaveAsync(CancellationToken cancel = default) => await _Db.SaveChangesAsync(cancel).ConfigureAwait(false);
+
+        public void Clear() => _Db.ChangeTracker.Clear();
     }
 }

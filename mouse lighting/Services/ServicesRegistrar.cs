@@ -27,6 +27,7 @@ namespace mouse_lighting.Services
 
             services.AddTransient<IRepository<Lighting>, Repository<Lighting>>();
             services.AddTransient<IRepository<LightingCycle>, Repository<LightingCycle>>();
+
             services.AddTransient<AppDataBase>();
             
             services.AddTransient<IDataService, DataService.DataService>();
@@ -34,8 +35,8 @@ namespace mouse_lighting.Services
 
             services.AddSingleton<IObserverStatusBar, ObserverStatusBar>();
             services.AddSingleton<IDataTransferBetweenViews, DataTransferBetweenViews>();
-            services.AddSingleton<IExportService, ExportService>();
-            services.AddSingleton<ILightingConvert, LightingConvert>();
+            services.AddTransient<IExportService, ExportService>();
+            services.AddTransient<ILightingConvert, LightingConvert>();
             services.AddSingleton<ICyclesModels, CyclesModels>();
 
 

@@ -1,7 +1,9 @@
-﻿using Models;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Models;
 using mouse_lighting.Services.LightingHandlers;
 using mouse_lighting.Services.Observer;
 using mouse_lighting.Services.UserDialog;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Xml.Linq;
@@ -10,19 +12,22 @@ namespace mouse_lighting.Services.DataService
 {
     interface IExportService
     {
-        public void ExportXml(Lighting? lighting, string? path);
+        public void ExportXmlAsync(Lighting? lighting, string? path);
     }
     internal class ExportService : IExportService
     {
         private readonly IUserDialog _UserDialog;
         private readonly IObserverStatusBar _StatusBar;
-        private readonly ILightingConvert _Creator;
+        //private ILightingConvert _Creator;
+
+        static int i = 0;
 
         public ExportService(IObserverStatusBar observerStatusBar, ILightingConvert creator, IUserDialog userDialog)
         {
+            i++;
             _UserDialog = userDialog;
             _StatusBar = observerStatusBar;
-            _Creator = creator;
+            //_Creator = creator;
         }
         private XDocument ConvertInXmlFile(Lighting lighting, List<FrameCycle> frames)
         {
@@ -50,20 +55,21 @@ namespace mouse_lighting.Services.DataService
             return doc;
         }
 
-        public void ExportXml(Lighting? lighting, string? path)
+        public void ExportXmlAsync(Lighting? lighting, string? path)
         {
-            if (lighting == null || lighting.Cycles == null || lighting.Guid == default! || string.IsNullOrEmpty(lighting.Name))
-            { throw new ArgumentException(nameof(lighting)); }
+            Debug.WriteLine("ExportService {0}", i);
+            var _Creator = App.Services.GetRequiredService<ILightingConvert>();
+            if (lighting == null || lighting.Cycles == null || lighting.Guid == default! || string.IsNullOrEmpty(lighting.Name)) { throw new ArgumentException(nameof(lighting)); }
+
             if (string.IsNullOrEmpty(path) || !Directory.Exists(path)) { _UserDialog.ShowNotification($"Path not found\n path:'{path}'"); return; }
 
-            var res = _Creator.Worker(lighting);
-            if (res.Count == 0) { _UserDialog.ShowNotification("List is empty"); return; }
-            var doc = ConvertInXmlFile(lighting, res);
             var fileName = $"File_{lighting.Guid.ToString().ToUpper()}";
 
             using (StreamWriter sw = new StreamWriter($"{path}\\{fileName}.xml", false, Encoding.Unicode))
             {
-                doc.Save(sw);
+                List<FrameCycle> res = _Creator.Worker(lighting);
+                if (res.Count == 0) { _UserDialog.ShowNotification("List is empty"); return; }
+                var doc = ConvertInXmlFile(lighting, res);
             }
             _StatusBar.StatusBar($"Export {path}\\{fileName}.xml");
         }

@@ -6,6 +6,6 @@
         <StatusBarItem DockPanel.Dock="Right">
             <ResizeGrip />
         </StatusBarItem>
-        <StatusBarItem Content="{Binding Status}" />
+        <StatusBarItem Content="{Binding Status}" Foreground="{Binding Color}" />
     </StatusBar>
 </UserControl>

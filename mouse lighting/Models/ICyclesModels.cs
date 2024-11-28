@@ -14,7 +14,7 @@ namespace mouse_lighting.Models
         void Delete(object? p);
         void Down(object? p);
         void Export();
-        Task SaveInDb();
+        void SaveInDb();
         void Up(object? p);
         void UpdateCycles(int id);
     }

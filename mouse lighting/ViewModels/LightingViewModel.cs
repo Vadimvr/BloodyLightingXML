@@ -1,9 +1,7 @@
 ﻿using Models;
 using mouse_lighting.Commands.Base;
 using mouse_lighting.Models;
-using mouse_lighting.Services.DataService;
 using mouse_lighting.Services.Interfaces;
-using mouse_lighting.Services.UserDialog;
 using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -75,21 +73,15 @@ namespace mouse_lighting.ViewModels
         public ICommand UpdateNameCommand => _UpdateNameCommand ??=
             new LambdaCommand(OnUpdateNameCommandExecuted, CanUpdateNameCommandExecute);
         private bool CanUpdateNameCommandExecute(object? p) => SelectedLighting != null;
-        private void OnUpdateNameCommandExecuted(object? p)
+        private async void OnUpdateNameCommandExecuted(object? p)
         {
+
             if (SelectedLighting != null && SelectedLighting.Id > 0 && !string.IsNullOrEmpty(SelectedLighting.Name))
             {
-                Task.Run(() =>
-                {
-                    Thread.Sleep(10000);
-
-                    _LightingModel.UpdateName(SelectedLighting);
-                }
-                 , default);
+                await _LightingModel.UpdateNameAsync(SelectedLighting).ConfigureAwait(false);
             }
         }
         #endregion
-
     }
 }
 

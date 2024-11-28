@@ -39,7 +39,7 @@ namespace mouse_lighting.Models
                                 Guid = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                                 Cycles = new List<LightingCycle> { new LightingCycle() }
                             };
-                            _IExport.ExportXml(lighting, pa);
+                            _IExport.ExportXmlAsync(lighting, pa);
                         }
                     }
                 }

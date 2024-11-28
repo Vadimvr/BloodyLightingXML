@@ -51,7 +51,7 @@ namespace mouse_lighting.Views.Controls
 
             set
             {
-                Debug.WriteLine($"SetValue(ColorStringProperty, value); {value}");
+              //  Debug.WriteLine($"SetValue(ColorStringProperty, value); {value}");
                 SetValue(ColorStringProperty, value);
             }
         }
@@ -64,7 +64,7 @@ namespace mouse_lighting.Views.Controls
                 new PropertyMetadata(default!, OnColorStringChanged));
         private static void OnColorStringChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            Debug.WriteLine(e.NewValue);
+          //  Debug.WriteLine(e.NewValue);
             var c = d as ColorPickerControl;
             var n = e.NewValue as string;
             if (c != null && !string.IsNullOrEmpty(n)) { c.ColorBackGroundBorder = n; }

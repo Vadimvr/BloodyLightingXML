@@ -2,8 +2,6 @@
 using Models;
 using mouse_lighting.Services.DataService;
 using mouse_lighting.Services.DataService.Repository;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 namespace mouse_lighting.Models
 {
     internal class CyclesModels : ICyclesModels
@@ -116,40 +114,53 @@ namespace mouse_lighting.Models
             UpdateCyclesEvent?.Invoke();
         }
 
-        public async Task SaveInDb()
+        public async void SaveInDb()
         {
             Monitor.Enter(lock_OBJECT);
             try
             {
-                foreach (var item in Cycles)
+                await Task.Run(async () =>
                 {
-                    if (item.Id == 0)
+                    foreach (var item in Cycles)
                     {
-                        await LightingCycles.AddAsync(item, false);
+                        if (item.Id == 0)
+                        {
+                            await LightingCycles.AddAsync(item, false);
+                        }
+                        else
+                        {
+                            await LightingCycles.UpdateAsync(item.Id, item, false);
+                        }
                     }
-                    else
+                    foreach (var item in removedCycles)
                     {
-                        await LightingCycles.UpdateAsync(item.Id, item, false);
+                        if (item.Id > 0)
+                        {
+                            await LightingCycles.DeleteAsync(item.Id, false);
+                        }
                     }
-                }
-                foreach (var item in removedCycles)
-                {
-                    if (item.Id > 0)
-                    {
-                        await LightingCycles.DeleteAsync(item.Id, false);
-                    }
-                }
+                });
                 await LightingCycles.SaveAsync();
             }
             finally { Monitor.Exit(lock_OBJECT); }
-
         }
-        public void Export()
+        public async void Export()
         {
             if (Lighting != null)
             {
-                var l = Lighting.CloneWithoutLightingCycles(Cycles);
-                ExportService.ExportXml(l, _DataService.Setting.PathToXML);
+                await Task.Run(() =>
+                  {
+                      var l = Lighting.CloneWithoutLightingCycles(Cycles);
+                      ExportService.ExportXmlAsync(l, _DataService.Setting.PathToXML);
+                  });
+                Cycles = new();
+                Lightings.Clear();
+                LightingCycles.Clear();
+                int id = Lighting.Id;
+                this.Lighting = null;
+                              
+                GC.Collect();
+                UpdateCycles(id);
             }
         }
     }

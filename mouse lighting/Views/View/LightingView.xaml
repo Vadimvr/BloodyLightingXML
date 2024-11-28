@@ -10,41 +10,22 @@
         <DataGrid Grid.Row="0" ItemsSource="{ Binding Lighting}" SelectedItem="{Binding SelectedLighting, Mode=TwoWay}"
                 HorizontalScrollBarVisibility="Disabled" Style="{StaticResource LightingCycleViewDataGrid}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Color Wheel Start">
+                <DataGridTemplateColumn Header="Lighting">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBox Text="{Binding Path=Name, Mode=TwoWay}" IsEnabled="False">
-                                <TextBox.InputBindings>
-                                    <KeyBinding Key="Enter"
-                                            Command="{Binding  RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.UpdateNameCommand}"
-                                            CommandParameter="{Binding Path=Name}" />
-                                </TextBox.InputBindings>
-                                <TextBox.Style>
-                                    <Style>
-                                        <Style.Triggers>
-                                            <Trigger Property="Mo"></Trigger>
-                                        
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBox.Style>
-                            </TextBox>
+                            <StackPanel>
+                                <TextBox Text="{Binding Path=Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Enter"
+                                                Command="{Binding  RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.UpdateNameCommand}"
+                                                CommandParameter="{Binding Path=Name}" />
+                                    </TextBox.InputBindings>
+                                </TextBox>
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
-
-
-            <!--<DataGrid.Columns>
-                <DataGridTextColumn Header="Lighting" Width="*">
-                    <DataGridTemplateColumn .CellTemplate>
-                        <DataTemplate>
-                            <TexBox Binding="{Binding Path=Name, Mode=TwoWay}">
-                            </TexBox>
-                        </DataTemplate>
-                    </DataGridTemplateColumn>
-                </DataGridTextColumn>
-
-            </DataGrid.Columns>-->
         </DataGrid>
         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left">
             <Button Content="Add" Style="{StaticResource Button_1}" Command="{Binding AddNewLightingCommand}" />

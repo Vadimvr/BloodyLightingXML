@@ -1,6 +1,9 @@
 ﻿using Models;
 using mouse_lighting.Services.DataService;
 using mouse_lighting.Services.DataService.Repository;
+using mouse_lighting.Services.Observer;
+using mouse_lighting.Services.UserDialog;
+using System.Diagnostics;
 
 namespace mouse_lighting.Models
 {
@@ -20,14 +23,16 @@ namespace mouse_lighting.Models
             }
         }
         public IDataService _DataService { get; }
+        private readonly IObserverStatusBar _StatusBar;
 
-        public LightingModel(IDataService dataService, IRepository<Lighting> Lightings)
+        public LightingModel(IDataService dataService, IRepository<Lighting> Lightings, IObserverStatusBar StatusBar)
         {
             //   UpdateLightingEvent += updateLighting;
 
             _DataService = dataService;
             _DataService.UpdatePathDbEvent += UpdateDbPath;
             _Lightings = Lightings;
+            _StatusBar = StatusBar;
             Lighting = _Lightings.Items.ToList();
         }
 
@@ -82,9 +87,6 @@ namespace mouse_lighting.Models
             UpdateLightingEvent?.Invoke();
         }
 
-        internal async void UpdateName(Lighting selectedLighting)
-        {
-            await _Lightings.UpdateAsync(selectedLighting.Id, selectedLighting);
-        }
+        internal Task UpdateNameAsync(Lighting selectedLighting) => _Lightings.UpdateAsync(selectedLighting.Id, selectedLighting);
     }
 }

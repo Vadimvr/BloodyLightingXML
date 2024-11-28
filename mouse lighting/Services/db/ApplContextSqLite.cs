@@ -27,7 +27,7 @@ namespace mouse_lighting.Services.db
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (string.IsNullOrEmpty(_Setting.PathToDb)) { throw new ArgumentNullException(nameof(Setting.PathToDb)); }
-            optionsBuilder.EnableSensitiveDataLogging();
+            optionsBuilder.EnableSensitiveDataLogging(false);
             optionsBuilder.UseSqlite($"Data Source={_Setting.PathToDb}");
         }
 
