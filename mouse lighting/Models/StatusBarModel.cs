@@ -28,7 +28,7 @@ namespace mouse_lighting.Models
                         break;
                     case TypeNotification.Notification:
                     default:
-                        Color = "#000000";
+                        Color = "#ffffff";
                         break;
                 }
                 MessageSent?.Invoke();

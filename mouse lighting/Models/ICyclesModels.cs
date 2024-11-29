@@ -5,7 +5,7 @@ namespace mouse_lighting.Models
 {
     internal interface ICyclesModels
     {
-        ObservableCollection<LightingCycle> Cycles { get; }
+        List<LightingCycle> Cycles { get; }
         Lighting? Lighting { get; set; }
 
         event Action? UpdateCyclesEvent;

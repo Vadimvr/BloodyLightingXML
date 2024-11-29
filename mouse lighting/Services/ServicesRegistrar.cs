@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Models;
 using mouse_lighting.Models;
 using mouse_lighting.Services.DataService;
-using mouse_lighting.Services.db;
+using mouse_lighting.Services.DataService.Export;
+using mouse_lighting.Services.DataService.Repository;
 using mouse_lighting.Services.Interfaces;
 using mouse_lighting.Services.LightingHandlers;
 using mouse_lighting.Services.Observer;
@@ -23,13 +25,18 @@ namespace mouse_lighting.Services
             services.AddSingleton<StatusBarModel>();
             services.AddSingleton<FindFolder>();
 
+            services.AddTransient<IRepository<Lighting>, Repository<Lighting>>();
+            services.AddTransient<IRepository<LightingCycle>, Repository<LightingCycle>>();
+
+            services.AddTransient<AppDataBase>();
+            
             services.AddTransient<IDataService, DataService.DataService>();
             services.AddTransient<IUserDialog, UserDialogService>();
 
             services.AddSingleton<IObserverStatusBar, ObserverStatusBar>();
             services.AddSingleton<IDataTransferBetweenViews, DataTransferBetweenViews>();
-            services.AddSingleton<IExportService, ExportService>();
-            services.AddSingleton<ILightingConvert, LightingConvert>();
+            services.AddTransient<IExportService, ExportService>();
+            services.AddTransient<ILightingConvert, LightingConvert>();
             services.AddSingleton<ICyclesModels, CyclesModels>();
 
 

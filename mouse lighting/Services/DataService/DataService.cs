@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using mouse_lighting.Models;
-using mouse_lighting.Services.db;
+using mouse_lighting.Services.DataService.Repository;
 
 namespace mouse_lighting.Services.DataService
 {
@@ -10,7 +10,7 @@ namespace mouse_lighting.Services.DataService
 
         public event Action? UpdatePathDbEvent;
 
-        public ApplContextSqLite DB => _appContext;
+     //   public ApplContextSqLite DB => _appContext;
         public Setting Setting { get; set; }
 
         public DataService(Setting setting, ApplContextSqLite context)

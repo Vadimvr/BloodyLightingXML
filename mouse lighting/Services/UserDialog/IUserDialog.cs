@@ -15,7 +15,6 @@
     }
     internal interface IUserDialog
     {
-
         public void ShowNotification(
             string message,
             TypeNotification typeNotification = TypeNotification.Notification,

@@ -1,45 +1,61 @@
-﻿using Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Models;
 using mouse_lighting.Services.DataService;
-using System.Collections.ObjectModel;
+using mouse_lighting.Services.DataService.Export;
+using mouse_lighting.Services.DataService.Repository;
 namespace mouse_lighting.Models
 {
     internal class CyclesModels : ICyclesModels
     {
         private readonly IExportService ExportService;
+        private readonly IRepository<Lighting> Lightings;
+        private readonly IRepository<LightingCycle> LightingCycles;
         private readonly IDataService _DataService;
+
         public Lighting? Lighting { get; set; }
-        public ObservableCollection<LightingCycle> Cycles { get; private set; }
+        public List<LightingCycle> Cycles { get; private set; } = new List<LightingCycle>();
+        private List<LightingCycle> removedCycles = new List<LightingCycle>();
+        private object lock_OBJECT = new object();
 
         public event Action? UpdateCyclesEvent;
-
-        public CyclesModels(IDataService dataService, IExportService exportService)
+        public CyclesModels(IDataService dataService, IExportService exportService, IRepository<Lighting> Lightings, IRepository<LightingCycle> LightingCycles)
         {
             _DataService = dataService;
-            Cycles = new ObservableCollection<LightingCycle>();
             ExportService = exportService;
+            this.Lightings = Lightings;
+            this.LightingCycles = LightingCycles;
         }
 
-        public void UpdateCycles(int id)
+        public async void UpdateCycles(int id)
         {
-
-            Lighting = _DataService.DB.Lighting.FirstOrDefault(x => x.Id == id);
+            removedCycles.Clear();
             Cycles.Clear();
-            if (Lighting != null)
-            {
-                foreach (var item in Lighting.Cycles.OrderBy(c => c.IndexNumber))
-                {
-                    Cycles.Add(item);
-                }
-            }
+            await Task.Run(async () =>
+                  {
+                      Monitor.Enter(lock_OBJECT);
+                      try
+                      {
+                          if (id > 0)
+                          {
+                              Lighting = await Lightings.Items.SingleOrDefaultAsync(l => l.Id == id);
+                              if (Lighting == null || Lighting.Cycles == null) { throw new ArgumentNullException(nameof(Lighting)); }
+
+                              Cycles.AddRange(LightingCycles.Items.Where(x => x.LightingId == Lighting.Id));
+                          }
+                      }
+                      finally
+                      {
+                          Monitor.Exit(lock_OBJECT);
+                      }
+                  });
+
             UpdateCyclesEvent?.Invoke();
         }
 
         public void AddNew()
         {
             if (Lighting == null) throw new ArgumentNullException(nameof(Lighting));
-
             LightingCycle cycle = new LightingCycle() { LightingId = Lighting.Id, IndexNumber = Cycles.Count() };
-            cycle = _DataService.DB.Add(cycle).Entity;
             Cycles.Add(cycle);
             UpdateCyclesEvent?.Invoke();
         }
@@ -49,14 +65,20 @@ namespace mouse_lighting.Models
             if (p is not int) { throw new ArgumentNullException(nameof(p)); }
 
             var indexNumber = (int)p;
-            for (int i = indexNumber + 1; i < Cycles.Count; i++)
-            {
-                Cycles[i].IndexNumber -= 1;
-                _DataService.DB.Update(Cycles[i]);
-            }
 
-            _DataService.DB.Remove(Cycles[indexNumber]);
-            Cycles.RemoveAt(indexNumber);
+            var removedCycle = Cycles.FirstOrDefault(x => x.IndexNumber == indexNumber);
+
+            if (removedCycle == null) { return; }
+            removedCycles.Add(removedCycle);
+
+            for (int i = 0; i < Cycles.Count; i++)
+            {
+                if (Cycles[i].IndexNumber > indexNumber)
+                {
+                    Cycles[i].IndexNumber -= 1;
+                }
+            }
+            Cycles.Remove(removedCycle);
             UpdateCyclesEvent?.Invoke();
         }
 
@@ -84,30 +106,57 @@ namespace mouse_lighting.Models
             var x = Cycles[indexNumber];
             Cycles[indexNumber] = Cycles[indexNumber + 1];
             Cycles[indexNumber + 1] = x;
-            _DataService.DB.Update(Cycles[indexNumber]);
-            _DataService.DB.Update(Cycles[indexNumber + 1]);
             UpdateCyclesEvent?.Invoke();
         }
 
-        public void SaveInDb()
+        public async void SaveInDb()
         {
-            foreach (var item in Cycles)
+            Monitor.Enter(lock_OBJECT);
+            try
             {
-                if (item.Id == 0)
+                await Task.Run(async () =>
                 {
-                    _DataService.DB.Add(item);
-                }
-                else
-                {
-                    _DataService.DB.Update(item);
-                }
+                    foreach (var item in Cycles)
+                    {
+                        if (item.Id == 0)
+                        {
+                            await LightingCycles.AddAsync(item, false);
+                        }
+                        else
+                        {
+                            await LightingCycles.UpdateAsync(item.Id, item, false);
+                        }
+                    }
+                    foreach (var item in removedCycles)
+                    {
+                        if (item.Id > 0)
+                        {
+                            await LightingCycles.DeleteAsync(item.Id, false);
+                        }
+                    }
+                });
+                await LightingCycles.SaveAsync();
             }
-            _DataService.DB.SaveChanges();
+            finally { Monitor.Exit(lock_OBJECT); }
         }
-
-        public void Export()
+        public async void Export()
         {
-            if (Lighting != null) { ExportService.ExportXml(Lighting, _DataService.Setting.PathToXML); }
+            if (Lighting != null)
+            {
+                await Task.Run(() =>
+                  {
+                      var l = Lighting.CloneWithoutLightingCycles(Cycles);
+                      ExportService.ExportXmlAsync(l, _DataService.Setting.PathToXML);
+                  });
+                Cycles = new();
+                Lightings.Clear();
+                LightingCycles.Clear();
+                int id = Lighting.Id;
+                this.Lighting = null;
+
+                GC.Collect();
+                UpdateCycles(id);
+            }
         }
     }
 }

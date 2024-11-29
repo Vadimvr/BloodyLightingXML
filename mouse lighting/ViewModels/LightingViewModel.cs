@@ -1,9 +1,7 @@
 ﻿using Models;
 using mouse_lighting.Commands.Base;
 using mouse_lighting.Models;
-using mouse_lighting.Services.DataService;
 using mouse_lighting.Services.Interfaces;
-using mouse_lighting.Services.UserDialog;
 using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
@@ -67,6 +65,22 @@ namespace mouse_lighting.ViewModels
             new LambdaCommand(OnRemoveLightingCommandExecuted, CanRemoveLightingCommandExecute);
         private bool CanRemoveLightingCommandExecute(object? p) => SelectedLighting != null;
         private void OnRemoveLightingCommandExecuted(object? p) { if (SelectedLighting != null) { _LightingModel.Remove(SelectedLighting); } }
+        #endregion
+
+
+        #region UpdateNameCommand - описание команды 
+        private LambdaCommand? _UpdateNameCommand;
+        public ICommand UpdateNameCommand => _UpdateNameCommand ??=
+            new LambdaCommand(OnUpdateNameCommandExecuted, CanUpdateNameCommandExecute);
+        private bool CanUpdateNameCommandExecute(object? p) => SelectedLighting != null;
+        private async void OnUpdateNameCommandExecuted(object? p)
+        {
+
+            if (SelectedLighting != null && SelectedLighting.Id > 0 && !string.IsNullOrEmpty(SelectedLighting.Name))
+            {
+                await _LightingModel.UpdateNameAsync(SelectedLighting).ConfigureAwait(false);
+            }
+        }
         #endregion
     }
 }
