@@ -18,7 +18,7 @@ namespace mouse_lighting.Services.LightingHandlers
             {
                 FirstColorTransitionFormSecondColor(item, frames);
             }
-            cycles = null;
+            cycles = default!;
             return frames;
         }
 

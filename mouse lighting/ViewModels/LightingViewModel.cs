@@ -1,7 +1,7 @@
 ﻿using Models;
 using mouse_lighting.Commands.Base;
 using mouse_lighting.Models;
-using mouse_lighting.Services.Interfaces;
+using mouse_lighting.Services.DataTransferBetweenView;
 using mouse_lighting.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;

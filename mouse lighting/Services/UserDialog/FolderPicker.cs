@@ -7,6 +7,7 @@ namespace mouse_lighting.Services.UserDialog
 {
     public class FolderPicker
     {
+#pragma warning disable CS8603, CS8618, CS8625, CS8600, CS8604
         private readonly List<string> _resultPaths = new List<string>();
         private readonly List<string> _resultNames = new List<string>();
 
@@ -221,5 +222,6 @@ namespace mouse_lighting.Services.UserDialog
             FOS_SUPPORTSTREAMABLEITEMS = unchecked((int)0x80000000)
         }
 #pragma warning restore CA1712 // Do not prefix enum values with type name
+#pragma warning restore CS8603, CS8618, CS8625, CS8600, CS8604
     }
 }

@@ -1,11 +1,10 @@
 ﻿using Models;
-using mouse_lighting.Services.Interfaces;
 
-namespace mouse_lighting.Services
+namespace mouse_lighting.Services.DataTransferBetweenView
 {
     internal class DataTransferBetweenViews : IDataTransferBetweenViews
     {
-        public string Name { get; private set; }
+        public string Name { get; private set; } = default!;
         public Guid Guid { get; private set; }
         public int Id { get; private set; }
 
@@ -29,7 +28,7 @@ namespace mouse_lighting.Services
             }
             else
             {
-                Name = null;
+                Name = default!;
                 Guid = Guid.Empty;
                 Id = -1;
             }

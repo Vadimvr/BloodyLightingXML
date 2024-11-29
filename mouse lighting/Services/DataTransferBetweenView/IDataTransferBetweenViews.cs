@@ -1,6 +1,6 @@
 ﻿using Models;
 
-namespace mouse_lighting.Services.Interfaces
+namespace mouse_lighting.Services.DataTransferBetweenView
 {
     interface IDataTransferBetweenViews
     {
