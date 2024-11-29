@@ -8,7 +8,7 @@ using System.IO;
 using System.Text;
 using System.Xml.Linq;
 
-namespace mouse_lighting.Services.DataService
+namespace mouse_lighting.Services.DataService.Export
 {
     interface IExportService
     {

@@ -4,7 +4,7 @@ using Models;
 using mouse_lighting.Models;
 using System.Windows.Media;
 
-namespace mouse_lighting.Services.db
+namespace mouse_lighting.Services.DataService.Repository
 {
     public class ApplContextSqLite : DbContext
     {
@@ -38,7 +38,6 @@ namespace mouse_lighting.Services.db
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-         //   modelBuilder.Entity<Lighting>().Navigation(e => e.Cycles).AutoInclude();
         }
     }
     public class ColorEFConverter : ValueConverter<Color, string>

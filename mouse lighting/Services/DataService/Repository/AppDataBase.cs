@@ -1,11 +1,9 @@
 ﻿using Models;
-using mouse_lighting.Services.DataService.Repository;
 
-namespace mouse_lighting.Services.db
+namespace mouse_lighting.Services.DataService.Repository
 {
     internal class AppDataBase
     {
-
         public AppDataBase(IRepository<Lighting> lighting, IRepository<LightingCycle> cycle)
         {
             Lighting = lighting;

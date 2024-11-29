@@ -3,7 +3,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:l="clr-namespace:mouse_lighting.Views.View" mc:Ignorable="d"
         d:DesignHeight="450" d:DesignWidth="800">
     <DockPanel>
-        <!--<l:PathView DockPanel.Dock="Top" />-->
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition></RowDefinition>

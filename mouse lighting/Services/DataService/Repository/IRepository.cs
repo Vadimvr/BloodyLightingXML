@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
-using mouse_lighting.Services.db;
 
 namespace mouse_lighting.Services.DataService.Repository
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using mouse_lighting.Models;
-using mouse_lighting.Services.db;
+using mouse_lighting.Services.DataService.Repository;
 
 namespace mouse_lighting.Services.DataService
 {

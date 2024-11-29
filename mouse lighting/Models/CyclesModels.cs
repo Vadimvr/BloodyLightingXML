@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Models;
 using mouse_lighting.Services.DataService;
+using mouse_lighting.Services.DataService.Export;
 using mouse_lighting.Services.DataService.Repository;
 namespace mouse_lighting.Models
 {
@@ -10,7 +11,6 @@ namespace mouse_lighting.Models
         private readonly IRepository<Lighting> Lightings;
         private readonly IRepository<LightingCycle> LightingCycles;
         private readonly IDataService _DataService;
-
 
         public Lighting? Lighting { get; set; }
         public List<LightingCycle> Cycles { get; private set; } = new List<LightingCycle>();
@@ -54,14 +54,9 @@ namespace mouse_lighting.Models
 
         public void AddNew()
         {
-
             if (Lighting == null) throw new ArgumentNullException(nameof(Lighting));
-
-            for (int i = 0; i < 1000; i++)
-            {
-                LightingCycle cycle = new LightingCycle() { LightingId = Lighting.Id, IndexNumber = Cycles.Count() };
-                Cycles.Add(cycle);
-            }
+            LightingCycle cycle = new LightingCycle() { LightingId = Lighting.Id, IndexNumber = Cycles.Count() };
+            Cycles.Add(cycle);
             UpdateCyclesEvent?.Invoke();
         }
 
@@ -158,7 +153,7 @@ namespace mouse_lighting.Models
                 LightingCycles.Clear();
                 int id = Lighting.Id;
                 this.Lighting = null;
-                              
+
                 GC.Collect();
                 UpdateCycles(id);
             }
